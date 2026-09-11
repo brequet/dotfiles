@@ -7,6 +7,63 @@
 
 let
   unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
+
+  # OpenChamber — agentic dev environment on top of OpenCode. Only shipped
+  # as an AppImage; wrapType2 extracts it so it runs without FUSE, then add
+  # the desktop entry (the upstream one calls AppRun, which we don't ship)
+  # and icon so it shows up in GNOME.
+  openchamber = let
+    version = "1.23.0";
+    src = pkgs.fetchurl {
+      url = "https://github.com/openchamber/openchamber/releases/download/v${version}/OpenChamber-${version}-linux-x86_64.AppImage";
+      sha256 = "1z27jvwd7vvzjsz9lfk2zc9sg6i225hlsq6zkrh8ha56jzg2q8hl";
+    };
+  in
+  pkgs.symlinkJoin {
+    name = "openchamber-${version}";
+    paths = [
+      (pkgs.appimageTools.wrapType2 { pname = "openchamber"; inherit version src; })
+      (pkgs.makeDesktopItem {
+        name = "openchamber";
+        exec = "openchamber";
+        icon = "openchamber";
+        comment = "Agentic development environment";
+        desktopName = "OpenChamber";
+        categories = [ "Development" ];
+        startupWMClass = "openchamber";
+      })
+    ];
+    postBuild = ''
+      install -Dm644 ${pkgs.appimageTools.extractType2 { pname = "openchamber"; inherit version src; }}/openchamber.png \
+        $out/share/icons/hicolor/256x256/apps/openchamber.png
+    '';
+  };
+
+  # libinput-config — LD_PRELOAD shim that scales scroll speed, since
+  # neither libinput nor GNOME exposes a scroll-speed setting. Upstream is
+  # archived (superseded by libinput's Lua plugins), but it still works.
+  libinput-config = pkgs.stdenv.mkDerivation {
+    pname = "libinput-config";
+    version = "2025-11-25";
+    src = pkgs.fetchFromGitLab {
+      owner = "warningnonpotablewater";
+      repo = "libinput-config";
+      rev = "6f359b8b3910a0658960c81004eb7779fbde4568";
+      sha256 = "sha256-flIjDFikwYMshCWEqXVaxSncSXCebCG3T4K0REIo2mY=";
+    };
+    nativeBuildInputs = [ pkgs.meson pkgs.ninja pkgs.pkg-config ];
+    buildInputs = [ pkgs.libinput pkgs.udev ];
+    # non_glibc: preload via LD_PRELOAD env var instead of /etc/ld.so.preload
+    # (which we don't want to touch on NixOS). Redirect the hardcoded /etc
+    # install paths and the missing /bin/true into the store.
+    mesonFlags = [ "-Dnon_glibc=true" ];
+    postPatch = ''
+      substituteInPlace meson.build \
+        --replace-fail "install_dir: '/etc/profile.d'" "install_dir: get_option('prefix') / 'etc/profile.d'" \
+        --replace-fail "install_dir: '/etc/fish/conf.d'" "install_dir: get_option('prefix') / 'etc/fish/conf.d'" \
+        --replace-fail "'/bin/true'" "'true'"
+    '';
+  };
 in
 
 {
@@ -123,6 +180,7 @@ in
       yazi
       btop
       unstable.opencode
+      openchamber
     ];
   };
 
