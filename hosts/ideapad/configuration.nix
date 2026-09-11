@@ -1,53 +1,29 @@
-# Host "nixos" — Hyper-V test VM now, same file will drive the future dual-boot install.
-# Rebuild:   sudo nixos-rebuild switch --flake /path/to/dotfiles/nixos#nixos
-# Rollback:  sudo nixos-rebuild switch --rollback   (or pick old gen in boot menu)
+# Host "ideapad" — Lenovo IdeaPad Pro 5 14AHP9, NixOS + Windows dual boot.
+# Rebuild:   sudo nixos-rebuild switch --flake ~/dotfiles#ideapad
+# Rollback:  sudo nixos-rebuild switch --rollback
 {
-  config, pkgs, zen-browser, ...
+  config, pkgs, zen-browser, nixpkgs-unstable, ...
 }:
+
+let
+  unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
+in
 
 {
   imports = [ ./hardware-configuration.nix ];
 
-  # Boot — systemd-boot while this is a plain VM.
-  # DUAL BOOT (real laptop): comment the two lines below and enable the GRUB
-  # block instead — the 100 MB Windows ESP is too small for systemd-boot kernels.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # boot.loader.systemd-boot.enable = false;
-  # boot.loader.grub = {
-  #   enable = true;
-  #   device = "nodev";
-  #   efiSupport = true;
-  #   useOSProber = true; # auto-detects the Windows Boot Manager
-  #   configurationLimit = 10;
-  # };
+  # GRUB on our own 1G ESP (/boot); os-prober finds the Windows Boot Manager
+  # on the 100M Windows ESP and adds it to the menu. NixOS is the default entry.
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true;
+    configurationLimit = 10;
+  };
 
   # Windows keeps the RTC on local time; without this the clock jumps per OS switch.
   time.hardwareClockInLocalTime = true;
-
-  # Shared personal files partition, created from Windows (NTFS, label "DATA").
-  # nofail: boots fine when the volume is absent (like in this VM).
-  fileSystems."/mnt/data" = {
-    device = "/dev/disk/by-label/DATA";
-    fsType = "ntfs3";
-    options = [ "nofail" "uid=1000" "gid=100" "windows_names" ];
-  };
-
-  virtualisation.hypervGuest.enable = true;
-
-  services.openssh.enable = true;
-  users.users.brequet.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPyq3d3Y/KDA1A7W+1887m7GOo0RlK0n/EVdvw7+jbvF opencode-host"
-  ];
-
-  # True GNOME Wayland over RDP: gnome-remote-desktop in system/headless mode.
-  # Connect from Windows with mstsc -> VM IP. Serves the real GNOME session
-  # (not Xfce) with dynamic resolution + clipboard. Console keeps GNOME.
-  services.gnome.gnome-remote-desktop.enable = true;
-  systemd.services."gnome-remote-desktop".wantedBy = [ "graphical.target" ];
-  networking.firewall.allowedTCPPorts = [ 3389 ];
-  boot.kernelParams = [ "video=Virtual-1:1920x1080" ];
 
   # fish as the interactive shell
   programs.fish.enable = true;
@@ -74,11 +50,12 @@
   # Retire GNOME Console - Ghostty replaces it everywhere
   environment.gnome.excludePackages = [ pkgs.gnome-console ];
 
-  environment.systemPackages = with pkgs; [ freerdp zed-editor ghostty ];
+  # os-prober is a separate package; grub needs it to find the Windows entry.
+  environment.systemPackages = with pkgs; [ git os-prober zed-editor ghostty ];
 
-  networking.hostName = "nixos";
+  networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
-  # Realtek 8852CE (laptop) is unstable with Wi-Fi powersave enabled.
+  # Realtek 8852CE is unstable with Wi-Fi powersave enabled.
   networking.networkmanager.wifi.powersave = false;
 
   time.timeZone = "Europe/Paris";
@@ -117,15 +94,15 @@
     pulse.enable = true;
   };
 
-  # Bluetooth for the laptop's Realtek 8852CE combo (no-op in this VM).
+  # Bluetooth for the Realtek 8852CE combo.
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
 
-  # Firmware updates; TRIM for the NixOS partitions (Linux trims its own FS).
+  # Firmware updates; TRIM for the SSD.
   services.fwupd.enable = true;
   services.fstrim.enable = true;
 
-  # Compressed in-RAM swap: no disk swapfile, no hibernation (dual boot).
+  # Compressed in-RAM swap.
   zramSwap.enable = true;
 
   users.users.brequet = {
@@ -136,13 +113,13 @@
       zen-browser.packages."${pkgs.system}".default
       chromium
       obsidian
-      opencode
       helix
       eza
       bat
       ripgrep
       yazi
       btop
+      unstable.opencode
     ];
   };
 
