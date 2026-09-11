@@ -21,6 +21,7 @@ in
     efiSupport = true;
     useOSProber = true;
     configurationLimit = 10;
+    forceInstall = true;
   };
 
   # Windows keeps the RTC on local time; without this the clock jumps per OS switch.
