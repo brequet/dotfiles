@@ -14,6 +14,7 @@ in
 
   # GRUB on our own 1G ESP (/boot); os-prober finds the Windows Boot Manager
   # on the 100M Windows ESP and adds it to the menu. NixOS is the default entry.
+  boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.grub = {
     enable = true;
     device = "nodev";
@@ -51,7 +52,8 @@ in
   environment.gnome.excludePackages = [ pkgs.gnome-console ];
 
   # os-prober is a separate package; grub needs it to find the Windows entry.
-  environment.systemPackages = with pkgs; [ git os-prober zed-editor ghostty ];
+  # efibootmgr: manage UEFI boot order (dual boot).
+  environment.systemPackages = with pkgs; [ git os-prober efibootmgr zed-editor ghostty ];
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
