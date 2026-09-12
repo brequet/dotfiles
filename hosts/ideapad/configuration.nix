@@ -128,6 +128,33 @@ in
   # Retire GNOME Console - Ghostty replaces it everywhere
   environment.gnome.excludePackages = [ pkgs.gnome-console ];
 
+  programs.dconf = {
+    enable = true;
+    profiles.user.databases = [
+      {
+        settings = {
+          "org/gnome/shell" = {
+            favorite-apps = [
+              "zen.desktop"
+              "org.gnome.Nautilus.desktop"
+              "com.mitchellh.ghostty.desktop"
+              "dev.zed.Zed.desktop"
+              "openchamber.desktop"
+            ];
+          };
+        };
+      }
+    ];
+  };
+
+  xdg.mime.defaultApplications = {
+    "text/html" = "zen.desktop";
+    "x-scheme-handler/http" = "zen.desktop";
+    "x-scheme-handler/https" = "zen.desktop";
+    "x-scheme-handler/about" = "zen.desktop";
+    "x-scheme-handler/unknown" = "zen.desktop";
+  };
+
   # os-prober is a separate package; grub needs it to find the Windows entry.
   # efibootmgr: manage UEFI boot order (dual boot).
   environment.systemPackages = with pkgs; [ git os-prober efibootmgr zed-editor ghostty ];
