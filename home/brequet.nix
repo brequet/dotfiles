@@ -47,6 +47,11 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
   };
 
+  # Same out-of-store trick so skills stay editable in place while being
+  # versioned in this repo.
+  home.file.".agents/skills".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/skills";
+
   home.packages = with pkgs; [
     zen-browser.packages."${pkgs.system}".default
     chromium
