@@ -45,6 +45,8 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/settings.json";
     "zed/keymap.json".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
+    "starship.toml".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
   };
 
   # Same out-of-store trick so skills stay editable in place while being
@@ -67,10 +69,17 @@ in
     flavor = "mocha";
     accent = "mauve";
     cursors.enable = true;
+    # The starship port generates ~/.config/starship.toml; we manage that file
+    # ourselves from the repo instead.
+    starship.enable = false;
   };
 
   programs = {
     fish.enable = true;
+    starship = {
+      enable = true;
+      enableTransience = true;
+    };
     ghostty = {
       enable = true;
       settings = {
