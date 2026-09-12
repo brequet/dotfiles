@@ -92,6 +92,10 @@ in
     bat.enable = true;
     eza.enable = true;
     helix.enable = true;
+    zoxide.enable = true;
+    fzf.enable = true;
+    fd.enable = true;
+    gh.enable = true;
   };
 
   home.packages = with pkgs; [
