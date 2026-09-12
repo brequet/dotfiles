@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "fields": {
+    "lightThemeId": {
+      "updatedAt": 1789159322377,
+      "value": "openchamber-light",
+      "surfaces": {
+        "desktop": {
+          "value": "catppuccin-light",
+          "updatedAt": 1789242966161
+        }
+      }
+    },
+    "darkThemeId": {
+      "updatedAt": 1789159322377,
+      "value": "openchamber-dark",
+      "surfaces": {
+        "desktop": {
+          "value": "catppuccin-dark",
+          "updatedAt": 1789243008741
+        }
+      }
+    },
+    "notifyOnSubtasks": {
+      "updatedAt": 1789159322377,
+      "value": true
+    },
+    "notifyOnCompletion": {
+      "updatedAt": 1789159322377,
+      "value": true
+    },
+    "notifyOnError": {
+      "updatedAt": 1789159322377,
+      "value": true
+    },
+    "notifyOnQuestion": {
+      "updatedAt": 1789159322377,
+      "value": true
+    },
+    "notificationTemplates": {
+      "updatedAt": 1789159322377,
+      "value": {
+        "completion": {
+          "title": "{agent_name} is ready",
+          "message": "{model_name} completed the task"
+        },
+        "error": {
+          "title": "Tool error",
+          "message": "{last_message}"
+        },
+        "question": {
+          "title": "Input needed",
+          "message": "{last_message}"
+        },
+        "subtask": {
+          "title": "{agent_name} is ready",
+          "message": "{model_name} completed the task"
+        }
+      }
+    },
+    "defaultModel": {
+      "updatedAt": 1789159398165,
+      "value": "opencode-go/deepseek-v4.1-flash"
+    },
+    "defaultAgent": {
+      "updatedAt": 1789159406681,
+      "value": "build"
+    },
+    "defaultVariant": {
+      "updatedAt": 1789218250917,
+      "value": "max"
+    },
+    "themeVariant": {
+      "updatedAt": 1789242966161,
+      "value": "dark"
+    },
+    "timeFormatPreference": {
+      "updatedAt": 1789243044614,
+      "value": "24h"
+    },
+    "weekStartPreference": {
+      "updatedAt": 1789243047413,
+      "value": "monday"
+    },
+    "themeId": {
+      "updatedAt": 0,
+      "surfaces": {
+        "desktop": {
+          "value": "catppuccin-dark",
+          "updatedAt": 1789243008741
+        }
+      }
+    },
+    "useSystemTheme": {
+      "updatedAt": 0,
+      "surfaces": {
+        "desktop": {
+          "value": true,
+          "updatedAt": 1789242966161
+        }
+      }
+    },
+    "monoFont": {
+      "value": "jetbrains-mono",
+      "updatedAt": 1789243055676
+    }
+  }
+}

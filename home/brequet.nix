@@ -1,4 +1,4 @@
-{ config, pkgs, zen-browser, nixpkgs-unstable, ... }:
+{ config, lib, pkgs, zen-browser, nixpkgs-unstable, ... }:
 
 let
   unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
@@ -51,6 +51,16 @@ in
   # versioned in this repo.
   home.file.".agents/skills".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/skills";
+
+  # OpenChamber rewrites preferences.json atomically (temp file + rename), so a
+  # symlink would be replaced by a regular file on every save. Seed it on a
+  # fresh install instead and leave the live file under the app's control.
+  home.activation.openchamberPreferences = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [[ ! -e "$HOME/.config/openchamber/preferences.json" ]]; then
+      run mkdir -p -m 700 "$HOME/.config/openchamber"
+      run install -m 600 ${./openchamber/preferences.json} "$HOME/.config/openchamber/preferences.json"
+    fi
+  '';
 
   catppuccin = {
     enable = true;
