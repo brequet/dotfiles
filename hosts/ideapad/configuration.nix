@@ -81,6 +81,25 @@ in
     forceInstall = true;
   };
 
+  boot.supportedFilesystems = [ "ntfs3" ];
+
+  fileSystems."/mnt/shared" = {
+    device = "/dev/disk/by-uuid/45AF523D081CD914";
+    fsType = "ntfs3";
+    options = [
+      "uid=1000"
+      "gid=100"
+      "umask=0027"
+      "windows_names"
+      "nofail"
+      "noauto"
+      "x-systemd.automount"
+      "x-systemd.idle-timeout=600"
+    ];
+  };
+
+  systemd.tmpfiles.rules = [ "d /mnt/shared 0755 root root -" ];
+
   # Windows keeps the RTC on local time; without this the clock jumps per OS switch.
   time.hardwareClockInLocalTime = true;
 
