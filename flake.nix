@@ -8,6 +8,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    catppuccin = {
+      url = "github:catppuccin/nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -19,6 +24,7 @@
       nixpkgs,
       nixpkgs-unstable,
       home-manager,
+      catppuccin,
       zen-browser,
       ...
     }:
@@ -31,6 +37,7 @@
         modules = [
           ./hosts/ideapad/configuration.nix
           home-manager.nixosModules.home-manager
+          catppuccin.nixosModules.catppuccin
         ];
       };
     };

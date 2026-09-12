@@ -52,16 +52,34 @@ in
   home.file.".agents/skills".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/skills";
 
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+    accent = "mauve";
+    cursors.enable = true;
+  };
+
+  programs = {
+    fish.enable = true;
+    ghostty = {
+      enable = true;
+      settings = {
+        font-family = "JetBrainsMono Nerd Font";
+        font-size = 12;
+      };
+    };
+    btop.enable = true;
+    yazi.enable = true;
+    bat.enable = true;
+    eza.enable = true;
+    helix.enable = true;
+  };
+
   home.packages = with pkgs; [
     zen-browser.packages."${pkgs.system}".default
     chromium
     obsidian
-    helix
-    eza
-    bat
     ripgrep
-    yazi
-    btop
     unstable.opencode
     openchamber
     package-version-server

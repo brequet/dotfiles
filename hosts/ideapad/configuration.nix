@@ -48,6 +48,21 @@ in
     forceInstall = true;
   };
 
+  # Catppuccin Mocha. autoEnable is off here so only the system-level ports
+  # below apply; application theming is pulled in by home-manager.
+  catppuccin = {
+    enable = true;
+    flavor = "mocha";
+    accent = "mauve";
+    autoEnable = false;
+    cache.enable = true;
+    grub.enable = true;
+    cursors.enable = true;
+  };
+
+  fonts.packages = [ pkgs.nerd-fonts.jetbrains-mono ];
+  fonts.fontconfig.defaultFonts.monospace = [ "JetBrainsMono Nerd Font" ];
+
   boot.supportedFilesystems = [ "ntfs3" ];
 
   fileSystems."/mnt/shared" = {
@@ -102,6 +117,10 @@ in
     profiles.user.databases = [
       {
         settings = {
+          "org/gnome/desktop/interface" = {
+            color-scheme = "prefer-dark";
+            accent-color = "purple";
+          };
           "org/gnome/shell" = {
             favorite-apps = [
               "zen.desktop"
@@ -190,6 +209,7 @@ in
     useGlobalPkgs = true;
     useUserPackages = true;
     extraSpecialArgs = { inherit inputs zen-browser nixpkgs-unstable; };
+    sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
     users.brequet = import ../../home/brequet.nix;
   };
 
