@@ -1,4 +1,4 @@
-{ pkgs, zen-browser, nixpkgs-unstable, ... }:
+{ config, pkgs, zen-browser, nixpkgs-unstable, ... }:
 
 let
   unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
@@ -37,6 +37,15 @@ in
 
 {
   home.stateVersion = "26.05";
+
+  # Symlinked out of the store so Zed's settings editor writes through to the
+  # repo working copy; only Nix changes need a rebuild.
+  xdg.configFile = {
+    "zed/settings.json".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/settings.json";
+    "zed/keymap.json".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
+  };
 
   home.packages = with pkgs; [
     zen-browser.packages."${pkgs.system}".default
