@@ -107,6 +107,8 @@ in
   programs.fish.enable = true;
   users.users.brequet.shell = pkgs.fish;
 
+  programs.direnv.enable = true;
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # The nix store grows fast across rebuilds; trim old generations weekly.
