@@ -208,6 +208,9 @@ in
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
+    # Move pre-existing files to <file>.bak on first activation instead of
+    # failing with a collision error.
+    backupFileExtension = "bak";
     extraSpecialArgs = { inherit inputs zen-browser nixpkgs-unstable; };
     sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
     users.brequet = import ../../home/brequet.nix;
