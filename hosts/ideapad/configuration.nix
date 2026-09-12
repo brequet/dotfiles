@@ -229,6 +229,7 @@ in
       btop
       unstable.opencode
       openchamber
+      package-version-server
     ];
   };
 
