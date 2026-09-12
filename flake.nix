@@ -3,6 +3,11 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    home-manager = {
+      url = "github:nix-community/home-manager/release-26.05";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     zen-browser = {
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -10,14 +15,23 @@
   };
 
   outputs =
-    { self, nixpkgs, nixpkgs-unstable, zen-browser, ... }:
+    inputs@{
+      nixpkgs,
+      nixpkgs-unstable,
+      home-manager,
+      zen-browser,
+      ...
+    }:
     {
       nixosConfigurations.ideapad = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         specialArgs = {
-          inherit zen-browser nixpkgs-unstable;
+          inherit inputs zen-browser nixpkgs-unstable;
         };
-        modules = [ ./hosts/ideapad/configuration.nix ];
+        modules = [
+          ./hosts/ideapad/configuration.nix
+          home-manager.nixosModules.home-manager
+        ];
       };
     };
 }
