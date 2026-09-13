@@ -45,7 +45,6 @@ in
     efiSupport = true;
     useOSProber = true;
     configurationLimit = 10;
-    forceInstall = true;
   };
 
   # Catppuccin Mocha. autoEnable is off here so only the system-level ports
@@ -143,9 +142,9 @@ in
     "x-scheme-handler/unknown" = "zen.desktop";
   };
 
-  # os-prober is a separate package; grub needs it to find the Windows entry.
-  # efibootmgr: manage UEFI boot order (dual boot).
-  environment.systemPackages = with pkgs; [ git os-prober efibootmgr zed-editor ghostty gnomeExtensions.caffeine ];
+  # efibootmgr: manage UEFI boot order (dual boot). GRUB's installer pulls in
+  # os-prober by itself when useOSProber is enabled, so we don't list it here.
+  environment.systemPackages = with pkgs; [ git efibootmgr zed-editor ghostty gnomeExtensions.caffeine ];
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
