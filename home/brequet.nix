@@ -38,6 +38,10 @@ in
 {
   home.stateVersion = "26.05";
 
+  # Binaries built outside Nix (`cargo install`) land in ~/.cargo/bin;
+  # NixOS doesn't add that directory to PATH on its own.
+  home.sessionPath = [ "$HOME/.cargo/bin" ];
+
   # Symlinked out of the store so Zed's settings editor writes through to the
   # repo working copy; only Nix changes need a rebuild.
   xdg.configFile = {
