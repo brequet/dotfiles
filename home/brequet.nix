@@ -55,6 +55,9 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
     "starship.toml".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
+    # Same for the niri session we're test-driving alongside GNOME.
+    "niri/config.kdl".source =
+      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/niri/config.kdl";
     # The generated hm-session-vars script skips itself when this marker is
     # inherited (e.g. imported into the systemd user environment by some app),
     # which would leave PATH and session variables unapplied in fish. conf.d is
@@ -135,6 +138,9 @@ in
   home.packages = with pkgs; [
     zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
+    # Launcher used by the niri/Hyprland keybinds; X11 bridge for niri.
+    fuzzel
+    xwayland-satellite
     obsidian
     ripgrep
     unstable.opencode
