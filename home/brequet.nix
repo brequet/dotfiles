@@ -1,7 +1,7 @@
 { config, lib, pkgs, zen-browser, nixpkgs-unstable, ... }:
 
 let
-  unstable = nixpkgs-unstable.legacyPackages.${pkgs.system};
+  unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 
   # OpenChamber — agentic dev environment on top of OpenCode. Only shipped
   # as an AppImage; wrapType2 extracts it so it runs without FUSE, then add
@@ -85,6 +85,9 @@ in
 
   catppuccin = {
     enable = true;
+    # Explicitly true to match `enable` and silence catppuccin/nix's
+    # deprecation notice; when autoEnable was unset it defaulted to `enable`.
+    autoEnable = true;
     flavor = "mocha";
     accent = "mauve";
     cursors.enable = true;
@@ -130,7 +133,7 @@ in
   };
 
   home.packages = with pkgs; [
-    zen-browser.packages."${pkgs.system}".default
+    zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
     obsidian
     ripgrep
