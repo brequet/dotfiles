@@ -55,6 +55,13 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
     "starship.toml".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
+    # The generated hm-session-vars script skips itself when this marker is
+    # inherited (e.g. imported into the systemd user environment by some app),
+    # which would leave PATH and session variables unapplied in fish. conf.d is
+    # sourced before config.fish, so clear the marker before that happens.
+    "fish/conf.d/hm-session-vars-marker.fish".text = ''
+      set -e __HM_SESS_VARS_SOURCED
+    '';
   };
 
   # Global opencode instructions, versioned in the repo and editable in place.
