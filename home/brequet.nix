@@ -84,6 +84,18 @@ in
 
   programs = {
     fish.enable = true;
+    # fiche needs OPENCODE_API_KEY; ask for it once (home/fiche/ensure-api-key.sh)
+    # and load it from outside the Nix store on every shell.
+    fish.shellInit = ''
+      if test -s ~/.config/fiche/api_key
+        set -gx OPENCODE_API_KEY (cat ~/.config/fiche/api_key)
+      else if status is-interactive
+        bash ${./fiche/ensure-api-key.sh}
+        if test -s ~/.config/fiche/api_key
+          set -gx OPENCODE_API_KEY (cat ~/.config/fiche/api_key)
+        end
+      end
+    '';
     starship = {
       enable = true;
       enableTransience = true;
