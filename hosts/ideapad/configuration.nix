@@ -145,7 +145,7 @@ in
 
   # os-prober is a separate package; grub needs it to find the Windows entry.
   # efibootmgr: manage UEFI boot order (dual boot).
-  environment.systemPackages = with pkgs; [ git os-prober efibootmgr zed-editor ghostty ];
+  environment.systemPackages = with pkgs; [ git os-prober efibootmgr zed-editor ghostty gnomeExtensions.caffeine ];
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
