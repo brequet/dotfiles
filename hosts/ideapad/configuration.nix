@@ -170,6 +170,11 @@ in
   services.displayManager.gdm.enable = true;
   services.desktopManager.gnome.enable = true;
 
+  # Extra Wayland session to test-drive alongside GNOME. Keybinds/config live
+  # in ~/dotfiles/home/niri (symlinked by home-manager); pick the session from
+  # the gear menu on the GDM login screen.
+  programs.niri.enable = true;
+
   services.xserver.xkb = {
     layout = "fr";
     variant = "";
