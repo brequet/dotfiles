@@ -57,6 +57,10 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
   };
 
+  # Global opencode instructions, versioned in the repo and editable in place.
+  xdg.configFile."opencode/AGENTS.md".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/AGENTS.md";
+
   # Same out-of-store trick so skills stay editable in place while being
   # versioned in this repo.
   home.file.".agents/skills".source =
