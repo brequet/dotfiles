@@ -106,5 +106,7 @@ in
     unstable.opencode
     openchamber
     package-version-server
+    # Nix language server, used by the Zed Nix extension.
+    nixd
   ];
 }

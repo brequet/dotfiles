@@ -18,4 +18,26 @@
     "dark": "Catppuccin Mocha",
   },
   "load_direnv": "direct",
+  "languages": {
+    "Nix": {
+      "language_servers": ["nixd", "!nil"],
+    },
+  },
+  "lsp": {
+    "nixd": {
+      "settings": {
+        "nixpkgs": {
+          "expr": "import (builtins.getFlake \"/home/brequet/dotfiles\").inputs.nixpkgs { }",
+        },
+        "options": {
+          "nixos": {
+            "expr": "(builtins.getFlake \"/home/brequet/dotfiles\").nixosConfigurations.ideapad.options",
+          },
+          "home-manager": {
+            "expr": "(builtins.getFlake \"/home/brequet/dotfiles\").nixosConfigurations.ideapad.options.home-manager.users.type.getSubOptions []",
+          },
+        },
+      },
+    },
+  },
 }
