@@ -58,13 +58,6 @@ in
     # Same for the niri session we're test-driving alongside GNOME.
     "niri/config.kdl".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/niri/config.kdl";
-    # Desktop shell pieces for the niri session.
-    "waybar/config".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/waybar/config.jsonc";
-    "waybar/style.css".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/waybar/style.css";
-    "mako/config".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/mako/config";
     # The generated hm-session-vars script skips itself when this marker is
     # inherited (e.g. imported into the systemd user environment by some app),
     # which would leave PATH and session variables unapplied in fish. conf.d is
@@ -145,16 +138,11 @@ in
   home.packages = with pkgs; [
     zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
-    # Launcher, bar, notifications, brightness and mixer for the niri session.
+    # Launcher and Wayland helpers; DMS provides the bar, notifications,
+    # tray and mixer.
     fuzzel
     xwayland-satellite
-    waybar
-    mako
     brightnessctl
-    pavucontrol
-    # Tray applets: actionable Wi-Fi and Bluetooth menus.
-    networkmanagerapplet
-    blueman
     obsidian
     ripgrep
     unstable.opencode

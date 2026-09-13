@@ -2,7 +2,7 @@
 # Rebuild:   sudo nixos-rebuild switch --flake ~/dotfiles#ideapad
 # Rollback:  sudo nixos-rebuild switch --rollback
 {
-  config, inputs, pkgs, zen-browser, nixpkgs-unstable, ...
+  config, inputs, lib, pkgs, zen-browser, nixpkgs-unstable, ...
 }:
 
 let
@@ -31,6 +31,11 @@ let
         --replace-fail "'/bin/true'" "'true'"
     '';
   };
+
+  # 26.05 ships dms-shell 1.4.6; unstable has 1.5.3. The service below is
+  # hand-wired to niri.service instead of programs.dms-shell, whose default
+  # target would also start it inside the GNOME session.
+  unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 in
 
 {
@@ -144,7 +149,8 @@ in
 
   # efibootmgr: manage UEFI boot order (dual boot). GRUB's installer pulls in
   # os-prober by itself when useOSProber is enabled, so we don't list it here.
-  environment.systemPackages = with pkgs; [ git efibootmgr zed-editor ghostty gnomeExtensions.caffeine ];
+  environment.systemPackages = with pkgs; [ git efibootmgr zed-editor ghostty gnomeExtensions.caffeine ]
+    ++ (with unstable; [ dms-shell quickshell dgop matugen cava khal wtype ]);
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
@@ -174,6 +180,38 @@ in
   # in ~/dotfiles/home/niri (symlinked by home-manager); pick the session from
   # the gear menu on the GDM login screen.
   programs.niri.enable = true;
+
+  # DankMaterialShell trial: a Quickshell shell for niri (bar, spotlight
+  # launcher, control center, notifications, lock screen). Runs as a user
+  # service bound to niri.service so it never starts in the GNOME session.
+  systemd.user.services.dms = {
+    description = "DankMaterialShell";
+    wantedBy = [ "niri.service" ];
+    partOf = [ "niri.service" ];
+    after = [ "niri.service" ];
+    requisite = [ "niri.service" ];
+    restartIfChanged = true;
+    # NixOS injects a minimal PATH into units; clear it so dms inherits the
+    # session's, where qs, niri, khal and apps launched from spotlight live.
+    path = lib.mkForce [ ];
+    serviceConfig = {
+      Type = "dbus";
+      BusName = "org.freedesktop.Notifications";
+      ExecStart = "${unstable.dms-shell}/bin/dms run --session";
+      Restart = "on-failure";
+      RestartForceExitStatus = "TEMPFAIL";
+      SuccessExitStatus = "TEMPFAIL";
+      RestartSec = 1.23;
+      LimitNOFILE = 16384;
+      TimeoutStartSec = 90;
+      TimeoutStopSec = 10;
+    };
+  };
+
+  # Dependencies nixpkgs' DMS module enables by default: wallpaper theming,
+  # system monitor/process list, calendar events, audio visualizer, clipboard
+  # paste, plus Quickshell itself. Power profiles feed its control center.
+  services.power-profiles-daemon.enable = true;
 
   services.xserver.xkb = {
     layout = "fr";
