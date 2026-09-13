@@ -42,6 +42,10 @@ in
   # NixOS doesn't add that directory to PATH on its own.
   home.sessionPath = [ "$HOME/.cargo/bin" ];
 
+  # fiche reads the vault location from the environment; it's not a secret,
+  # so it can be set declaratively here.
+  home.sessionVariables.FICHE_VAULT_PATH = "${config.home.homeDirectory}/Documents/vault";
+
   # Symlinked out of the store so Zed's settings editor writes through to the
   # repo working copy; only Nix changes need a rebuild.
   xdg.configFile = {
