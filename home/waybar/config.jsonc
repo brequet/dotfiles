@@ -1,0 +1,92 @@
+// Waybar for niri — hand-editable: home-manager symlinks this to
+// ~/.config/waybar/config, so edit here and run `kill -SIGUSR2 $(pidof waybar)`
+// to apply. Icons are Unicode escapes (Font Awesome range) so they survive
+// any editor: U+F185 sun, U+F026/27/28 volume, U+F1EB wifi, U+F293 bluetooth,
+// U+F2DB CPU, U+F233 RAM, U+F244..F240 battery (empty..full), U+F0E7 charging.
+// Docs: https://github.com/Alexays/Waybar/wiki
+{
+  "layer": "top",
+  "position": "top",
+  "height": 34,
+  "spacing": 8,
+  "margin-top": 6,
+  "margin-left": 8,
+  "margin-right": 8,
+
+  "modules-left": ["niri/workspaces", "niri/window"],
+  "modules-center": ["clock"],
+  "modules-right": ["backlight", "pulseaudio", "network", "bluetooth", "cpu", "memory", "battery", "tray"],
+
+  // Clickable workspaces (uses niri's IPC).
+  "niri/workspaces": {
+    "format": "{value}"
+  },
+
+  "niri/window": {
+    "format": "{title}",
+    "max-length": 70
+  },
+
+  "clock": {
+    "format": "{:%a %d %b  %H:%M}",
+    "tooltip-format": "<tt>{calendar}</tt>"
+  },
+
+  "backlight": {
+    "format": "\uF185 {percent}%",
+    "on-scroll-up": "brightnessctl set +5%",
+    "on-scroll-down": "brightnessctl set 5%-",
+    "tooltip-format": "Brightness {percent}% — scroll to change"
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "\uF026 {volume}%",
+    "format-icons": ["\uF026", "\uF027", "\uF028"],
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "tooltip-format": "Volume {volume}% — {desc} — scroll to change, click to mix"
+  },
+
+  "network": {
+    "format-wifi": "\uF1EB {essid} {signalStrength}%",
+    "format-ethernet": "\uF1EB {ifname}",
+    "format-disconnected": "\uF1EB offline",
+    "tooltip-format": "{ifname} — {ipaddr}/{cidr} — click to configure",
+    "on-click": "gnome-control-center wifi"
+  },
+
+  "bluetooth": {
+    "format": "\uF293",
+    "format-connected": "\uF293 {num_connections}",
+    "format-no-controller": "\uF293 off",
+    "tooltip-format": "Bluetooth — {controller_alias} — click to configure",
+    "on-click": "gnome-control-center bluetooth"
+  },
+
+  "cpu": {
+    "format": "\uF2DB {usage}%",
+    "interval": 3,
+    "tooltip-format": "CPU {usage}%"
+  },
+
+  "memory": {
+    "format": "\uF233 {percentage}%",
+    "interval": 5,
+    "tooltip-format": "RAM {used:0.1f}G / {total:0.1f}G"
+  },
+
+  "battery": {
+    "states": { "warning": 25, "critical": 10 },
+    "format": "{icon} {capacity}%",
+    "format-charging": "\uF0E7 {capacity}%",
+    "format-plugged": "\uF0E7 {capacity}%",
+    "format-icons": ["\uF244", "\uF243", "\uF242", "\uF241", "\uF240"],
+    "tooltip-format": "Battery {capacity}% — {timeTo}"
+  },
+
+  "tray": {
+    "spacing": 12,
+    "icon-size": 18
+  }
+}
