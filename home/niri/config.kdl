@@ -30,7 +30,6 @@ spawn-at-startup "xwayland-satellite"
 
 binds {
     Mod+Return { spawn "ghostty"; }
-    Mod+D { spawn "fuzzel"; }
     Mod+Q { close-window; }
     Mod+Shift+E { quit; }
     Mod+Shift+Slash { show-hotkey-overlay; }
@@ -70,11 +69,13 @@ binds {
     Mod+Space { spawn "vicinae" "toggle"; }
 
     // Noctalia panels (service started by systemd with niri).
+    Mod+D { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
     Mod+N { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
     // Mod+M: Noctalia has no dedicated process-list panel (yet) - its sysmon
     // lives in the bar/control center, so fall back to btop.
     Mod+M { spawn "btop"; }
     Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
+    Mod+P { spawn "noctalia" "msg" "panel-toggle" "noctalia/notes:panel"; }
     Mod+X { spawn "noctalia" "msg" "panel-toggle" "session"; }
     Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
     Mod+Alt+N allow-when-locked=true { spawn "noctalia" "msg" "nightlight-toggle"; }

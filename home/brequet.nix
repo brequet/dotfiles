@@ -153,11 +153,18 @@ in
       enable = true;
       settings = {
         shell.font = "JetBrainsMono Nerd Font";
+        # Noctalia becomes the polkit agent in the niri session.
+        shell.polkit_agent = true;
         theme = {
           mode = "dark";
           source = "builtin";
           builtin = "Catppuccin";
         };
+        # Noctalia notes: full-height side panel of plain .md files that lives
+        # inside the synced Obsidian vault (folder itself set in Settings ->
+        # Plugins, the gear on the notes row; per-file location is runtime
+        # state, not declarative config).
+        plugins.enabled = [ "noctalia/notes" ];
       };
     };
   };
