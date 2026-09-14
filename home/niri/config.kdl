@@ -41,16 +41,22 @@ binds {
     // With one window per column they simply switch workspaces, so they always act.
     Mod+J { focus-window-or-workspace-down; }
     Mod+K { focus-window-or-workspace-up; }
+    // Arrows mirror the hjkl binds: same actions, two ways in (like nvim).
+    Mod+Left { focus-column-left; }
+    Mod+Right { focus-column-right; }
+    Mod+Down { focus-window-or-workspace-down; }
+    Mod+Up { focus-window-or-workspace-up; }
     Mod+Shift+H { move-column-left; }
     Mod+Shift+L { move-column-right; }
     Mod+Shift+J { move-window-down; }
     Mod+Shift+K { move-window-up; }
-
-    // Workspaces are the vertical axis.
-    Mod+Up { focus-workspace-up; }
-    Mod+Down { focus-workspace-down; }
-    Mod+Shift+Up { move-column-to-workspace-up; }
-    Mod+Shift+Down { move-column-to-workspace-down; }
+    Mod+Shift+Left { move-column-left; }
+    Mod+Shift+Right { move-column-right; }
+    Mod+Shift+Down { move-window-down; }
+    Mod+Shift+Up { move-window-up; }
+    // Cross-workspace moves keep a home on Ctrl+arrows.
+    Mod+Ctrl+Up { move-column-to-workspace-up; }
+    Mod+Ctrl+Down { move-column-to-workspace-down; }
 
     Mod+F { maximize-column; }
     Mod+Shift+F { fullscreen-window; }
