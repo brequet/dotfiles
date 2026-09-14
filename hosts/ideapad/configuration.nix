@@ -112,31 +112,19 @@ in
     };
   };
 
-  # Retire GNOME Console - Ghostty replaces it everywhere
-  environment.gnome.excludePackages = [ pkgs.gnome-console ];
-
-  programs.dconf = {
-    enable = true;
-    profiles.user.databases = [
-      {
-        settings = {
-          "org/gnome/desktop/interface" = {
-            color-scheme = "prefer-dark";
-            accent-color = "purple";
-          };
-          "org/gnome/shell" = {
-            favorite-apps = [
-              "zen.desktop"
-              "org.gnome.Nautilus.desktop"
-              "com.mitchellh.ghostty.desktop"
-              "dev.zed.Zed.desktop"
-              "openchamber.desktop"
-            ];
-          };
+  # dconf: GTK applications (zen, obsidian, file pickers) follow the system
+  # color scheme and accent color from here.
+  programs.dconf.enable = true;
+  programs.dconf.profiles.user.databases = [
+    {
+      settings = {
+        "org/gnome/desktop/interface" = {
+          color-scheme = "prefer-dark";
+          accent-color = "purple";
         };
-      }
-    ];
-  };
+      };
+    }
+  ];
 
   xdg.mime.defaultApplications = {
     "text/html" = "zen.desktop";
@@ -207,22 +195,6 @@ in
     '')
   ];
 
-  # GNOME stays installed as a fallback session in the greeter, but skip the
-  # background daemons its module enables system-wide (file indexers, DLNA,
-  # mDNS, color management). Re-enable services.avahi if CUPS stops finding
-  # network printers.
-  services.gnome.localsearch.enable = false;
-  services.gnome.tinysparql.enable = false;
-  services.gnome.rygel.enable = false;
-  services.dleyna.enable = false;
-  services.avahi.enable = false;
-  services.colord.enable = false;
-
-  services.desktopManager.gnome.enable = true;
-
-  # Extra Wayland session to test-drive alongside GNOME. Keybinds/config live
-  # in ~/dotfiles/home/niri (symlinked by home-manager); pick niri or GNOME
-  # from the session list on the greetd login screen.
   programs.niri.enable = true;
 
   # Noctalia: a native C++/OpenGL ES shell for niri (bar, launcher, control
@@ -251,10 +223,8 @@ in
   # Power profiles: feed Noctalia's control center and bar power widget.
   services.power-profiles-daemon.enable = true;
 
-  services.xserver.xkb = {
-    layout = "fr";
-    variant = "";
-  };
+  # TTY keyboard layout. The graphical layouts live in their own configs:
+  # niri's in ~/dotfiles/home/niri, the greeter's in the greeter settings.
   console.keyMap = "fr";
 
   services.pulseaudio.enable = false;
