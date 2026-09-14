@@ -173,12 +173,50 @@ in
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  services.displayManager.gdm.enable = true;
+  # Login screen: DankMaterialShell's greeter on greetd, replacing GDM/GNOME.
+  # It runs its own niri instance as user "dms-greeter" and reuses brequet's
+  # DMS theme/wallpaper/colors via configHome.
+  services.displayManager.dms-greeter = {
+    enable = true;
+    package = unstable.dms-shell;
+    quickshell.package = unstable.quickshell;
+    # Kept as a real file so it can be validated on every build (system.checks
+    # below); it replaces DMS's built-in greeter config, hence the defaults.
+    compositor = {
+      name = "niri";
+      customConfig = builtins.readFile ./dms-greeter-niri.kdl;
+    };
+    configHome = "/home/brequet";
+  };
+
+  # Parse the hand-written and greeter niri configs while the system is being
+  # built, so a syntax error fails `nixos-rebuild` instead of the login screen
+  # (learned the hard way: `xkb { layout "fr" }` on one line is not valid KDL).
+  # system.checks are build dependencies only and stay out of the closure.
+  system.checks = [
+    (pkgs.runCommand "niri-config-check" { nativeBuildInputs = [ config.programs.niri.package ]; } ''
+      niri validate -c ${./dms-greeter-niri.kdl}
+      niri validate -c ${../../home/niri/config.kdl}
+      touch $out
+    '')
+  ];
+
+  # GNOME stays installed as a fallback session in the greeter, but skip the
+  # background daemons its module enables system-wide (file indexers, DLNA,
+  # mDNS, color management). Re-enable services.avahi if CUPS stops finding
+  # network printers.
+  services.gnome.localsearch.enable = false;
+  services.gnome.tinysparql.enable = false;
+  services.gnome.rygel.enable = false;
+  services.dleyna.enable = false;
+  services.avahi.enable = false;
+  services.colord.enable = false;
+
   services.desktopManager.gnome.enable = true;
 
   # Extra Wayland session to test-drive alongside GNOME. Keybinds/config live
-  # in ~/dotfiles/home/niri (symlinked by home-manager); pick the session from
-  # the gear menu on the GDM login screen.
+  # in ~/dotfiles/home/niri (symlinked by home-manager); pick niri or GNOME
+  # from the session list on the greetd login screen.
   programs.niri.enable = true;
 
   # DankMaterialShell trial: a Quickshell shell for niri (bar, spotlight

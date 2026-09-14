@@ -1,0 +1,35 @@
+// Niri config for the DankMaterialShell greeter (greetd login screen).
+// Referenced from hosts/ideapad/configuration.nix; nixos-rebuild runs
+// `niri validate` on this file via system.checks, so bad syntax fails the
+// build instead of the login screen.
+//
+// This fully replaces DMS's built-in greeter config, so it keeps its defaults:
+// DMS_RUN_GREETER switches quickshell into greeter mode, the black background
+// hides the compositor while the greeter draws, and hot corners are disabled.
+
+hotkey-overlay {
+    skip-at-startup
+}
+
+environment {
+    DMS_RUN_GREETER "1"
+}
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+layout {
+    background-color "#000000"
+}
+
+// AZERTY, matching the machine's console and session layouts.
+input {
+    keyboard {
+        xkb {
+            layout "fr"
+        }
+    }
+}
