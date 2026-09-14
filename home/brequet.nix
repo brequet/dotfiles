@@ -1,4 +1,4 @@
-{ config, lib, pkgs, zen-browser, nixpkgs-unstable, ... }:
+{ config, lib, pkgs, inputs, zen-browser, nixpkgs-unstable, ... }:
 
 let
   unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
@@ -36,6 +36,8 @@ let
 in
 
 {
+  imports = [ inputs.noctalia.homeModules.default ];
+
   home.stateVersion = "26.05";
 
   # Binaries built outside Nix (`cargo install`) land in ~/.cargo/bin;
@@ -142,12 +144,28 @@ in
         target = "niri.service";
       };
     };
+    # Noctalia shell for the niri session (trial replacing DMS). Its systemd
+    # unit is hand-wired in the host config: the HM module's unit targets
+    # graphical-session.target, which would also start it under GNOME.
+    # Settings land in ~/.config/noctalia/config.toml; the Settings GUI keeps
+    # writing runtime overrides to ~/.local/state/noctalia/settings.toml.
+    noctalia = {
+      enable = true;
+      settings = {
+        shell.font = "JetBrainsMono Nerd Font";
+        theme = {
+          mode = "dark";
+          source = "builtin";
+          builtin = "Catppuccin";
+        };
+      };
+    };
   };
 
   home.packages = with pkgs; [
     zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
-    # Launcher and Wayland helpers; DMS provides the bar, notifications,
+    # Launcher and Wayland helpers; Noctalia provides the bar, notifications,
     # tray and mixer.
     fuzzel
     xwayland-satellite
