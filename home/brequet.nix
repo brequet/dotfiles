@@ -135,7 +135,7 @@ in
     fzf.enable = true;
     fd.enable = true;
     gh.enable = true;
-    # Vicinae launcher (replaces DMS spotlight on Mod+Space). Target niri.service
+    # Vicinae launcher (raycast-like), bound on Mod+Space. Target niri.service
     # so its daemon only runs in the niri session, not in GNOME.
     vicinae = {
       enable = true;
@@ -144,9 +144,9 @@ in
         target = "niri.service";
       };
     };
-    # Noctalia shell for the niri session (trial replacing DMS). Its systemd
-    # unit is hand-wired in the host config: the HM module's unit targets
-    # graphical-session.target, which would also start it under GNOME.
+    # Noctalia shell for the niri session. Its systemd unit is hand-wired in
+    # the host config: the HM module's unit targets graphical-session.target,
+    # which would also start it under GNOME.
     # Settings land in ~/.config/noctalia/config.toml; the Settings GUI keeps
     # writing runtime overrides to ~/.local/state/noctalia/settings.toml.
     noctalia = {

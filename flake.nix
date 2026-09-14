@@ -22,6 +22,13 @@
     # nixpkgs pin: the package needs unstable, and following our stable input
     # would break the build.
     noctalia.url = "github:noctalia-dev/noctalia";
+
+    # Noctalia Greeter for greetd (login screen), built against our existing
+    # unstable nixpkgs to avoid a third copy.
+    noctalia-greeter = {
+      url = "github:noctalia-dev/noctalia-greeter";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs =
@@ -43,6 +50,7 @@
           ./hosts/ideapad/configuration.nix
           home-manager.nixosModules.home-manager
           catppuccin.nixosModules.catppuccin
+          inputs.noctalia-greeter.nixosModules.default
         ];
       };
     };

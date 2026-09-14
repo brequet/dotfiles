@@ -32,11 +32,6 @@ let
     '';
   };
 
-  # 26.05 ships dms-shell 1.4.6; unstable has 1.5.3. The service below is
-  # hand-wired to niri.service instead of programs.dms-shell, whose default
-  # target would also start it inside the GNOME session.
-  unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
   # Noctalia shell from upstream's flake; it builds against Noctalia's own
   # pinned nixpkgs-unstable, independent of our inputs.
   noctalia-pkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
@@ -153,11 +148,13 @@ in
 
   # efibootmgr: manage UEFI boot order (dual boot). GRUB's installer pulls in
   # os-prober by itself when useOSProber is enabled, so we don't list it here.
-  environment.systemPackages = with pkgs; [ git efibootmgr zed-editor ghostty gnomeExtensions.caffeine ]
-    # dms-shell/quickshell/matugen only remain for the dms-greeter login
-    # screen; the niri session shell itself is Noctalia now
-    # (systemd.user.services.noctalia below).
-    ++ (with unstable; [ dms-shell quickshell matugen ]);
+  environment.systemPackages = with pkgs; [
+    git
+    efibootmgr
+    zed-editor
+    ghostty
+    gnomeExtensions.caffeine
+  ];
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
@@ -180,29 +177,31 @@ in
     LC_TIME = "fr_FR.UTF-8";
   };
 
-  # Login screen: DankMaterialShell's greeter on greetd, replacing GDM/GNOME.
-  # It runs its own niri instance as user "dms-greeter" and reuses brequet's
-  # DMS theme/wallpaper/colors via configHome.
-  services.displayManager.dms-greeter = {
+  # Login screen: Noctalia Greeter on greetd. It bundles its own wlroots
+  # compositor (no per-greeter niri config needed) and lists every installed
+  # session (niri, GNOME). The module enables greetd, Polkit and
+  # accounts-daemon (avatars). Wallpaper/palette/font are synced from the
+  # Noctalia session through Polkit; brequet may apply that appearance-only
+  # sync without typing a password.
+  services.displayManager.noctalia-greeter = {
     enable = true;
-    package = unstable.dms-shell;
-    quickshell.package = unstable.quickshell;
-    # Kept as a real file so it can be validated on every build (system.checks
-    # below); it replaces DMS's built-in greeter config, hence the defaults.
-    compositor = {
-      name = "niri";
-      customConfig = builtins.readFile ./dms-greeter-niri.kdl;
+    package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    passwordless-sync-users = [ "brequet" ];
+    cursorTheme.package = pkgs.catppuccin-cursors.mochaMauve;
+    settings = {
+      session.default = "niri";
+      keyboard.layout = "fr";
+      cursor.theme = "catppuccin-mocha-mauve-cursors";
+      cursor.size = 24;
     };
-    configHome = "/home/brequet";
   };
 
-  # Parse the hand-written and greeter niri configs while the system is being
-  # built, so a syntax error fails `nixos-rebuild` instead of the login screen
-  # (learned the hard way: `xkb { layout "fr" }` on one line is not valid KDL).
+  # Parse the hand-written niri config while the system is being built, so a
+  # syntax error fails `nixos-rebuild` instead of the desktop session (learned
+  # the hard way: `xkb { layout "fr" }` on one line is not valid KDL).
   # system.checks are build dependencies only and stay out of the closure.
   system.checks = [
     (pkgs.runCommand "niri-config-check" { nativeBuildInputs = [ config.programs.niri.package ]; } ''
-      niri validate -c ${./dms-greeter-niri.kdl}
       niri validate -c ${../../home/niri/config.kdl}
       touch $out
     '')
@@ -226,10 +225,10 @@ in
   # from the session list on the greetd login screen.
   programs.niri.enable = true;
 
-  # Noctalia trial: a native C++/OpenGL ES shell for niri (bar, launcher,
-  # control center, notifications, lock screen). Same wiring as the DMS unit
-  # it replaces: a user service bound to niri.service so it never starts in
-  # the GNOME session. Settings live in programs.noctalia (home-manager).
+  # Noctalia: a native C++/OpenGL ES shell for niri (bar, launcher, control
+  # center, notifications, lock screen). Runs as a user service bound to
+  # niri.service so it never starts in the GNOME session. Settings live in
+  # programs.noctalia (home-manager).
   systemd.user.services.noctalia = {
     description = "Noctalia shell";
     wantedBy = [ "niri.service" ];

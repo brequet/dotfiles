@@ -71,8 +71,8 @@ binds {
 
     // Noctalia panels (service started by systemd with niri).
     Mod+N { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
-    // Mod+M was DMS's process list; Noctalia has no sysmon panel (yet) -
-    // its sysmon lives in the bar/control center, so fall back to btop.
+    // Mod+M: Noctalia has no dedicated process-list panel (yet) - its sysmon
+    // lives in the bar/control center, so fall back to btop.
     Mod+M { spawn "btop"; }
     Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
     Mod+X { spawn "noctalia" "msg" "panel-toggle" "session"; }
