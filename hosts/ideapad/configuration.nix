@@ -36,6 +36,10 @@ let
   # hand-wired to niri.service instead of programs.dms-shell, whose default
   # target would also start it inside the GNOME session.
   unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  # Noctalia shell from upstream's flake; it builds against Noctalia's own
+  # pinned nixpkgs-unstable, independent of our inputs.
+  noctalia-pkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
 in
 
 {
@@ -150,7 +154,10 @@ in
   # efibootmgr: manage UEFI boot order (dual boot). GRUB's installer pulls in
   # os-prober by itself when useOSProber is enabled, so we don't list it here.
   environment.systemPackages = with pkgs; [ git efibootmgr zed-editor ghostty gnomeExtensions.caffeine ]
-    ++ (with unstable; [ dms-shell quickshell dgop matugen cava khal wtype ]);
+    # dms-shell/quickshell/matugen only remain for the dms-greeter login
+    # screen; the niri session shell itself is Noctalia now
+    # (systemd.user.services.noctalia below).
+    ++ (with unstable; [ dms-shell quickshell matugen ]);
 
   networking.hostName = "ideapad";
   networking.networkmanager.enable = true;
@@ -219,36 +226,30 @@ in
   # from the session list on the greetd login screen.
   programs.niri.enable = true;
 
-  # DankMaterialShell trial: a Quickshell shell for niri (bar, spotlight
-  # launcher, control center, notifications, lock screen). Runs as a user
-  # service bound to niri.service so it never starts in the GNOME session.
-  systemd.user.services.dms = {
-    description = "DankMaterialShell";
+  # Noctalia trial: a native C++/OpenGL ES shell for niri (bar, launcher,
+  # control center, notifications, lock screen). Same wiring as the DMS unit
+  # it replaces: a user service bound to niri.service so it never starts in
+  # the GNOME session. Settings live in programs.noctalia (home-manager).
+  systemd.user.services.noctalia = {
+    description = "Noctalia shell";
     wantedBy = [ "niri.service" ];
     partOf = [ "niri.service" ];
     after = [ "niri.service" ];
     requisite = [ "niri.service" ];
     restartIfChanged = true;
-    # NixOS injects a minimal PATH into units; clear it so dms inherits the
-    # session's, where qs, niri, khal and apps launched from spotlight live.
+    # NixOS injects a minimal PATH into units; clear it so noctalia inherits
+    # the session's, where apps launched from its launcher live.
     path = lib.mkForce [ ];
     serviceConfig = {
-      Type = "dbus";
-      BusName = "org.freedesktop.Notifications";
-      ExecStart = "${unstable.dms-shell}/bin/dms run --session";
+      Type = "simple";
+      ExecStart = "${noctalia-pkg}/bin/noctalia";
       Restart = "on-failure";
-      RestartForceExitStatus = "TEMPFAIL";
-      SuccessExitStatus = "TEMPFAIL";
-      RestartSec = 1.23;
       LimitNOFILE = 16384;
-      TimeoutStartSec = 90;
       TimeoutStopSec = 10;
     };
   };
 
-  # Dependencies nixpkgs' DMS module enables by default: wallpaper theming,
-  # system monitor/process list, calendar events, audio visualizer, clipboard
-  # paste, plus Quickshell itself. Power profiles feed its control center.
+  # Power profiles: feed Noctalia's control center and bar power widget.
   services.power-profiles-daemon.enable = true;
 
   services.xserver.xkb = {

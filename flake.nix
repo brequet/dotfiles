@@ -17,6 +17,11 @@
       url = "github:youwen5/zen-browser-flake";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Noctalia shell (native C++/OpenGL ES, no Qt/GTK). Keeps upstream's own
+    # nixpkgs pin: the package needs unstable, and following our stable input
+    # would break the build.
+    noctalia.url = "github:noctalia-dev/noctalia";
   };
 
   outputs =
