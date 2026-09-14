@@ -172,11 +172,9 @@ in
   home.packages = with pkgs; [
     zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
-    # Launcher and Wayland helpers; Noctalia provides the bar, notifications,
-    # tray and mixer.
-    fuzzel
+    # Wayland helpers; Noctalia provides the bar, notifications, tray and
+    # mixer, Vicinae is the launcher, Noctalia the brightness OSD.
     xwayland-satellite
-    brightnessctl
     obsidian
     ripgrep
     unstable.opencode
