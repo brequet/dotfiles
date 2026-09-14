@@ -66,8 +66,10 @@ binds {
 
     Print { screenshot; }
 
+    // Vicinae launcher (systemd service started with niri).
+    Mod+Space { spawn "vicinae" "toggle"; }
+
     // DankMaterialShell panels (service started by systemd with niri).
-    Mod+Space { spawn "dms" "ipc" "spotlight" "toggle"; }
     Mod+N { spawn "dms" "ipc" "notifications" "toggle"; }
     Mod+M { spawn "dms" "ipc" "processlist" "toggle"; }
     Mod+V { spawn "dms" "ipc" "clipboard" "toggle"; }

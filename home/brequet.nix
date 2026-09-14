@@ -133,6 +133,15 @@ in
     fzf.enable = true;
     fd.enable = true;
     gh.enable = true;
+    # Vicinae launcher (replaces DMS spotlight on Mod+Space). Target niri.service
+    # so its daemon only runs in the niri session, not in GNOME.
+    vicinae = {
+      enable = true;
+      systemd = {
+        enable = true;
+        target = "niri.service";
+      };
+    };
   };
 
   home.packages = with pkgs; [
