@@ -1,0 +1,12 @@
+#!/bin/sh
+# Format staged Nix files with the flake formatter (nixfmt, RFC style) and
+# re-stage them. Enable once per clone with:
+#   git config core.hooksPath .githooks
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACM -- '*.nix')
+[ -n "$files" ] || exit 0
+
+# shellcheck disable=SC2086  # word splitting is wanted here: one arg per file.
+nix fmt -- $files
+git add -- $files
