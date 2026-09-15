@@ -38,9 +38,15 @@
       catppuccin,
       ...
     }:
+    let
+      system = "x86_64-linux";
+    in
     {
+      # `nix fmt` formats the repo with nixfmt (RFC style).
+      formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
+
       nixosConfigurations.ideapad = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = { inherit inputs; };
         modules = [
           ./hosts/ideapad/configuration.nix

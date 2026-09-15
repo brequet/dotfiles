@@ -2,7 +2,11 @@
 # Rebuild:   sudo nixos-rebuild switch --flake ~/dotfiles#ideapad
 # Rollback:  sudo nixos-rebuild switch --rollback
 {
-  config, inputs, lib, pkgs, ...
+  config,
+  inputs,
+  lib,
+  pkgs,
+  ...
 }:
 
 let
@@ -70,7 +74,10 @@ in
   # Cache devshells so direnv doesn't re-evaluate the flake on every cd.
   programs.direnv.nix-direnv.enable = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # Local packages from pkgs/, exposed as pkgs.<name> to every module
   # (home-manager included, since it uses the global pkgs).
@@ -230,7 +237,10 @@ in
 
   users.users.brequet = {
     isNormalUser = true;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
   };
 
   home-manager = {
