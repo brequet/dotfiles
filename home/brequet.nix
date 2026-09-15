@@ -38,9 +38,11 @@ in
     '';
   };
 
-  # Global opencode instructions, versioned in the repo and editable in place.
+  # Global opencode config, versioned in the repo and editable in place.
   xdg.configFile."opencode/AGENTS.md".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/AGENTS.md";
+  xdg.configFile."opencode/opencode.jsonc".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/opencode/opencode.jsonc";
 
   # Same out-of-store trick so skills stay editable in place while being
   # versioned in this repo.
