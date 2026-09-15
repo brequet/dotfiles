@@ -211,6 +211,16 @@ in
   # UPower provides the D-Bus API Noctalia uses for the battery widget.
   services.upower.enable = true;
 
+  # Suspend/resume: after a long s2idle the embedded controller is sometimes
+  # slow to wake, which stalls the end of resume for seconds (12-16 s before
+  # the NBCN32WW BIOS update, ~6 s occasionally after it). Two mitigations:
+  # amd_pmc gives the EC 2.5 s to settle before sleeping, and systemd-sleep
+  # no longer freezes user.slice, so a residual stall stops freezing the
+  # whole session while the kernel finishes. Safe here: no LUKS home, no NFS.
+  boot.extraModprobeConfig = "options amd_pmc delay_suspend=1";
+  systemd.services.systemd-suspend.serviceConfig.Environment =
+    "SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0";
+
   # TTY keyboard layout. The graphical layouts live in their own configs:
   # niri's in ~/dotfiles/home/niri, the greeter's in the greeter settings.
   console.keyMap = "fr";
