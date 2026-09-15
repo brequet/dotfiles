@@ -222,6 +222,8 @@ in
 
   # Power profiles: feed Noctalia's control center and bar power widget.
   services.power-profiles-daemon.enable = true;
+  # UPower provides the D-Bus API Noctalia uses for the battery widget.
+  services.upower.enable = true;
 
   # TTY keyboard layout. The graphical layouts live in their own configs:
   # niri's in ~/dotfiles/home/niri, the greeter's in the greeter settings.
