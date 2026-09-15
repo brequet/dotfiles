@@ -104,6 +104,38 @@ in
     fzf.enable = true;
     fd.enable = true;
     gh.enable = true;
+    # Host aliases only, no secrets (the private keys stay outside the repo
+    # under ~/.ssh). `win` is the alias the tv-windows-laptop skill uses.
+    # `enableDefaultConfig` is going away upstream, so the defaults it used
+    # to inject are spelled out below (same values OpenSSH itself uses).
+    ssh = {
+      enable = true;
+      enableDefaultConfig = false;
+      settings = {
+        "*" = {
+          ForwardAgent = false;
+          AddKeysToAgent = "no";
+          Compression = false;
+          ServerAliveInterval = 0;
+          ServerAliveCountMax = 3;
+          HashKnownHosts = false;
+          UserKnownHostsFile = "~/.ssh/known_hosts";
+          ControlMaster = "no";
+          ControlPath = "~/.ssh/master-%r@%n:%p";
+          ControlPersist = "no";
+        };
+        win = {
+          HostName = "192.168.1.67";
+          User = "batbo";
+          IdentityFile = "~/.ssh/id_ed25519";
+        };
+        oracle = {
+          HostName = "144.24.193.235";
+          User = "opc";
+          IdentityFile = "~/.ssh/oracle_ssh-key-2022-05-30.key";
+        };
+      };
+    };
     # Vicinae launcher (raycast-like), bound on Mod+Space. Target niri.service
     # so its daemon only runs in the niri session.
     vicinae = {
