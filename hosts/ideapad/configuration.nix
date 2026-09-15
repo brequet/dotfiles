@@ -121,13 +121,13 @@ in
     "x-scheme-handler/unknown" = "zen.desktop";
   };
 
-  # efibootmgr: manage UEFI boot order (dual boot). GRUB's installer pulls in
+  # System-wide packages only: efibootmgr manages UEFI boot order (dual boot)
+  # and Zed is kept available outside the user session. git and ghostty are
+  # installed by their home-manager modules. GRUB's installer pulls in
   # os-prober by itself when useOSProber is enabled, so we don't list it here.
   environment.systemPackages = with pkgs; [
-    git
     efibootmgr
     zed-editor
-    ghostty
   ];
 
   networking.hostName = "ideapad";
