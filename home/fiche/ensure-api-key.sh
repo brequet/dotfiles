@@ -23,8 +23,8 @@ if ! IFS= read -r -s key; then
 fi
 echo >&2
 
-mkdir -p "$(dirname "$key_file")"
 umask 077
+mkdir -p "$(dirname "$key_file")"
 printf '%s\n' "$key" > "$key_file"
 unset key
 

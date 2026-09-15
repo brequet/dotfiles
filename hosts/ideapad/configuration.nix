@@ -228,7 +228,6 @@ in
 
   users.users.brequet = {
     isNormalUser = true;
-    description = "brequet";
     extraGroups = [ "networkmanager" "wheel" ];
   };
 
@@ -243,7 +242,7 @@ in
     users.brequet = import ../../home/brequet.nix;
   };
 
-  # Firefox removed: Zen (main) + Chromium (secondary) replace it.
+  # Obsidian is the only unfree package in use.
   nixpkgs.config.allowUnfree = true;
 
   system.stateVersion = "26.05";
