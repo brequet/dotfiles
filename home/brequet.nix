@@ -169,7 +169,7 @@ in
     noctalia = {
       enable = true;
       settings = {
-        shell.font = "JetBrainsMono Nerd Font";
+        shell.font_family = "JetBrainsMono Nerd Font";
         # Noctalia becomes the polkit agent in the niri session.
         shell.polkit_agent = true;
         theme = {
