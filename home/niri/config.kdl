@@ -72,6 +72,11 @@ binds {
     // Render a stacked column as vertical tabs instead of a vertical pile.
     Mod+W { toggle-column-tabbed-display; }
 
+    // Maximize / fullscreen / width presets (niri defaults).
+    Mod+F { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+R { switch-preset-column-width; }
+
     Mod+Shift+Left  { focus-monitor-left; }
     Mod+Shift+Down  { focus-monitor-down; }
     Mod+Shift+Up    { focus-monitor-up; }
