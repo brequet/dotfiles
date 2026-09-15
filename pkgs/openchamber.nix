@@ -1,9 +1,11 @@
 # OpenChamber — agentic dev environment on top of OpenCode. Upstream only
 # ships an AppImage; wrapType2 extracts it so it runs without FUSE.
+# Bump with: nix run nixpkgs#nix-update -- --flake openchamber
 {
   appimageTools,
   fetchurl,
   makeDesktopItem,
+  nix-update-script,
 }:
 
 let
@@ -42,6 +44,8 @@ appimageTools.wrapType2 {
     install -Dm644 ${desktopItem}/share/applications/openchamber.desktop \
       $out/share/applications/openchamber.desktop
   '';
+
+  passthru.updateScript = nix-update-script { };
 
   meta = {
     description = "Agentic development environment";

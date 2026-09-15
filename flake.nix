@@ -42,6 +42,13 @@
       system = "x86_64-linux";
     in
     {
+      # The AppImage wrapper is exposed here so `nix-update --flake openchamber`
+      # can find it; the host reuses the same derivation through the pkgs/
+      # overlay. Note that `nix flake update` never bumps it: it's pinned by
+      # hand in pkgs/openchamber.nix.
+      packages.${system}.openchamber =
+        nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openchamber.nix { };
+
       # `nix fmt` formats the repo with nixfmt (RFC style).
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
 
