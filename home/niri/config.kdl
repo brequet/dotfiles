@@ -30,44 +30,90 @@ spawn-at-startup "xwayland-satellite"
 
 binds {
     Mod+Return { spawn "ghostty"; }
-    Mod+Q { close-window; }
+    Mod+Q repeat=false { close-window; }
     Mod+Shift+E { quit; }
+    // Hotkey overlay: default binding is Mod+Shift+/; on AZERTY "/" is
+    // Shift+":" (the unshifted key is colon), so both spellings are bound.
     Mod+Shift+Slash { show-hotkey-overlay; }
+    Mod+Shift+colon { show-hotkey-overlay; }
+    // Overview: default is Mod+O; Mod+Tab kept as alias.
+    Mod+O repeat=false { toggle-overview; }
     Mod+Tab { toggle-overview; }
 
-    Mod+H { focus-column-left; }
-    Mod+L { focus-column-right; }
-    // J/K walk down/up: stacked windows first, then the workspace below/above.
-    // With one window per column they simply switch workspaces, so they always act.
-    Mod+J { focus-window-or-workspace-down; }
-    Mod+K { focus-window-or-workspace-up; }
-    // Arrows mirror the hjkl binds: same actions, two ways in (like nvim).
-    Mod+Left { focus-column-left; }
+    // Navigation follows niri's defaults: every action has both an arrow and
+    // an hjkl binding (same action, two ways in, like nvim). Ctrl moves,
+    // Shift targets monitors (no-ops on the laptop screen, useful when an
+    // external display is plugged in).
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
     Mod+Right { focus-column-right; }
-    Mod+Down { focus-window-or-workspace-down; }
-    Mod+Up { focus-window-or-workspace-up; }
-    Mod+Shift+H { move-column-left; }
-    Mod+Shift+L { move-column-right; }
-    Mod+Shift+J { move-window-down; }
-    Mod+Shift+K { move-window-up; }
-    Mod+Shift+Left { move-column-left; }
-    Mod+Shift+Right { move-column-right; }
-    Mod+Shift+Down { move-window-down; }
-    Mod+Shift+Up { move-window-up; }
-    // Cross-workspace moves keep a home on Ctrl+arrows.
-    Mod+Ctrl+Up { move-column-to-workspace-up; }
-    Mod+Ctrl+Down { move-column-to-workspace-down; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
 
-    Mod+F { maximize-column; }
-    Mod+Shift+F { fullscreen-window; }
-    Mod+R { switch-preset-column-width; }
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
 
-    // AZERTY: digits are shifted, so Super+Shift+1..5 selects workspace 1..5.
-    Mod+Shift+1 { focus-workspace 1; }
-    Mod+Shift+2 { focus-workspace 2; }
-    Mod+Shift+3 { focus-workspace 3; }
-    Mod+Shift+4 { focus-workspace 4; }
-    Mod+Shift+5 { focus-workspace 5; }
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+
+    // Workspaces are the vertical axis (defaults: U/I and PageUp/Down).
+    // With default J/K only walking windows inside a column, these are the
+    // way to hop between workspaces.
+    Mod+U { focus-workspace-down; }
+    Mod+I { focus-workspace-up; }
+    Mod+Ctrl+U { move-column-to-workspace-down; }
+    Mod+Ctrl+I { move-column-to-workspace-up; }
+    Mod+Shift+U { move-workspace-down; }
+    Mod+Shift+I { move-workspace-up; }
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up { focus-workspace-up; }
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up { move-column-to-workspace-up; }
+
+    // Super + wheel jumps workspaces (defaults).
+    Mod+WheelScrollDown cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp cooldown-ms=150 { move-column-to-workspace-up; }
+
+    // AZERTY: the digit row types & é " ' ( è _ ç à ( with Super alone,
+    // since digits need Shift there — and niri matches binds against the
+    // UNSHIFTED key of the layout, so Mod+Shift+1 can never match (niri#2982).
+    // Bind the keysyms the keys actually produce; digits 2, 7 and 9 are used
+    // where the symbol keysym is unreliable.
+    Mod+ampersand { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+quotedbl { focus-workspace 3; }
+    Mod+apostrophe { focus-workspace 4; }
+    Mod+parenleft { focus-workspace 5; }
+    Mod+minus { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+underscore { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+    Mod+Ctrl+ampersand { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+quotedbl { move-column-to-workspace 3; }
+    Mod+Ctrl+apostrophe { move-column-to-workspace 4; }
+    Mod+Ctrl+parenleft { move-column-to-workspace 5; }
+    Mod+Ctrl+minus { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+underscore { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
 
     Print { screenshot; }
 
