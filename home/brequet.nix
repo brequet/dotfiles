@@ -136,6 +136,16 @@ in
         };
       };
     };
+    # Global identity only. Git also reads a legacy ~/.gitconfig which
+    # overrides this file, so delete it after the switch that writes
+    # ~/.config/git/config.
+    git = {
+      enable = true;
+      settings.user = {
+        name = "brequet";
+        email = "requet.baptiste@gmail.com";
+      };
+    };
     # Vicinae launcher (raycast-like), bound on Mod+Space. Target niri.service
     # so its daemon only runs in the niri session.
     vicinae = {
