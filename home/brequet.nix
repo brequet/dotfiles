@@ -137,9 +137,8 @@ in
         };
       };
     };
-    # Global identity only. Git also reads a legacy ~/.gitconfig which
-    # overrides this file, so delete it after the switch that writes
-    # ~/.config/git/config.
+    # Global identity only; programs.gh adds the GitHub credential helper by
+    # default, which is why ~/.config/git/config also has credential entries.
     git = {
       enable = true;
       settings.user = {
