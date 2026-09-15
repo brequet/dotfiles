@@ -6,7 +6,7 @@ let
   # OpenChamber — agentic dev environment on top of OpenCode. Only shipped
   # as an AppImage; wrapType2 extracts it so it runs without FUSE, then add
   # the desktop entry (the upstream one calls AppRun, which we don't ship)
-  # and icon so it shows up in GNOME.
+  # and icon so it shows up in desktop app menus.
   openchamber = let
     version = "1.23.0";
     src = pkgs.fetchurl {
@@ -57,7 +57,7 @@ in
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
     "starship.toml".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
-    # Same for the niri session we're test-driving alongside GNOME.
+    # Same for the niri session config.
     "niri/config.kdl".source =
       config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/niri/config.kdl";
     # The generated hm-session-vars script skips itself when this marker is
@@ -136,7 +136,7 @@ in
     fd.enable = true;
     gh.enable = true;
     # Vicinae launcher (raycast-like), bound on Mod+Space. Target niri.service
-    # so its daemon only runs in the niri session, not in GNOME.
+    # so its daemon only runs in the niri session.
     vicinae = {
       enable = true;
       systemd = {
@@ -146,7 +146,7 @@ in
     };
     # Noctalia shell for the niri session. Its systemd unit is hand-wired in
     # the host config: the HM module's unit targets graphical-session.target,
-    # which would also start it under GNOME.
+    # which would start it in any graphical session.
     # Settings land in ~/.config/noctalia/config.toml; the Settings GUI keeps
     # writing runtime overrides to ~/.local/state/noctalia/settings.toml.
     noctalia = {

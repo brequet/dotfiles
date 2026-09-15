@@ -115,7 +115,6 @@ in
     efibootmgr
     zed-editor
     ghostty
-    gnomeExtensions.caffeine
   ];
 
   networking.hostName = "ideapad";
@@ -141,7 +140,7 @@ in
 
   # Login screen: Noctalia Greeter on greetd. It bundles its own wlroots
   # compositor (no per-greeter niri config needed) and lists every installed
-  # session (niri, GNOME). The module enables greetd, Polkit and
+  # session (niri). The module enables greetd, Polkit and
   # accounts-daemon (avatars). Wallpaper/palette/font are synced from the
   # Noctalia session through Polkit; brequet may apply that appearance-only
   # sync without typing a password.
@@ -173,7 +172,7 @@ in
 
   # Noctalia: a native C++/OpenGL ES shell for niri (bar, launcher, control
   # center, notifications, lock screen). Runs as a user service bound to
-  # niri.service so it never starts in the GNOME session. Settings live in
+  # niri.service so it only starts with the niri session. Settings live in
   # programs.noctalia (home-manager).
   systemd.user.services.noctalia = {
     description = "Noctalia shell";
