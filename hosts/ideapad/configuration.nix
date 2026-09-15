@@ -240,7 +240,10 @@ in
     # failing with a collision error.
     backupFileExtension = "bak";
     extraSpecialArgs = { inherit inputs; };
-    sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
+    sharedModules = [
+      inputs.catppuccin.homeModules.catppuccin
+      inputs.noctalia.homeModules.default
+    ];
     users.brequet = import ../../home/brequet.nix;
   };
 

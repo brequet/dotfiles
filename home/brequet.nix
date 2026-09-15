@@ -5,8 +5,6 @@ let
 in
 
 {
-  imports = [ inputs.noctalia.homeModules.default ];
-
   home.stateVersion = "26.05";
 
   # Binaries built outside Nix (`cargo install`) land in ~/.cargo/bin;
