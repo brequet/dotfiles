@@ -70,6 +70,10 @@ in
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+  # Local packages from pkgs/, exposed as pkgs.<name> to every module
+  # (home-manager included, since it uses the global pkgs).
+  nixpkgs.overlays = [ (import ../../pkgs) ];
+
   # The nix store grows fast across rebuilds; trim old generations weekly.
   nix.gc = {
     automatic = true;
