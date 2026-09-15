@@ -138,6 +138,12 @@ binds {
     // Noctalia panels (service started by systemd with niri).
     Mod+D { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
     Mod+N { spawn "noctalia" "msg" "panel-toggle" "control-center"; }
+    // Same panel, but landing on its Notifications tab: history of past
+    // notifications + Do Not Disturb. The extra argument is the tab/context
+    // Noctalia's control-center panel understands (see `noctalia msg --help`).
+    Mod+Shift+N { spawn "noctalia" "msg" "panel-toggle" "control-center" "notifications"; }
+    // Silence popup toasts from anywhere (they still land in the history tab).
+    Mod+Shift+D { spawn "noctalia" "msg" "notification-dnd-toggle"; }
     // Mod+M: Noctalia has no dedicated process-list panel (yet) - its sysmon
     // lives in the bar/control center, so fall back to btop.
     Mod+M { spawn "btop"; }
