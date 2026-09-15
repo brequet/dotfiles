@@ -178,10 +178,11 @@ in
           builtin = "Catppuccin";
         };
         # Noctalia notes: full-height side panel of plain .md files that lives
-        # inside the synced Obsidian vault (folder itself set in Settings ->
-        # Plugins, the gear on the notes row; per-file location is runtime
-        # state, not declarative config).
+        # inside the synced Obsidian vault. Plugin settings go in the
+        # [plugin_settings."<id>"] table; the Settings GUI still layers runtime
+        # overrides on top via ~/.local/state/noctalia/settings.toml.
         plugins.enabled = [ "noctalia/notes" ];
+        plugin_settings."noctalia/notes".notes_dir = "~/Documents/vault/10_Personal/Notes";
         # Idle policy, timed from the last input event: screen off at 5 min,
         # lock at 10, lock + suspend at 30. Defining behaviors here replaces
         # Noctalia's seeded (disabled) ones, so all three are spelled out.
