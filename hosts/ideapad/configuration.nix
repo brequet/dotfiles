@@ -6,32 +6,6 @@
 }:
 
 let
-  # libinput-config — LD_PRELOAD shim that scales scroll speed, since
-  # neither libinput nor GNOME exposes a scroll-speed setting. Upstream is
-  # archived (superseded by libinput's Lua plugins), but it still works.
-  libinput-config = pkgs.stdenv.mkDerivation {
-    pname = "libinput-config";
-    version = "2025-11-25";
-    src = pkgs.fetchFromGitLab {
-      owner = "warningnonpotablewater";
-      repo = "libinput-config";
-      rev = "6f359b8b3910a0658960c81004eb7779fbde4568";
-      sha256 = "sha256-flIjDFikwYMshCWEqXVaxSncSXCebCG3T4K0REIo2mY=";
-    };
-    nativeBuildInputs = [ pkgs.meson pkgs.ninja pkgs.pkg-config ];
-    buildInputs = [ pkgs.libinput pkgs.udev ];
-    # non_glibc: preload via LD_PRELOAD env var instead of /etc/ld.so.preload
-    # (which we don't want to touch on NixOS). Redirect the hardcoded /etc
-    # install paths and the missing /bin/true into the store.
-    mesonFlags = [ "-Dnon_glibc=true" ];
-    postPatch = ''
-      substituteInPlace meson.build \
-        --replace-fail "install_dir: '/etc/profile.d'" "install_dir: get_option('prefix') / 'etc/profile.d'" \
-        --replace-fail "install_dir: '/etc/fish/conf.d'" "install_dir: get_option('prefix') / 'etc/fish/conf.d'" \
-        --replace-fail "'/bin/true'" "'true'"
-    '';
-  };
-
   # Noctalia shell from upstream's flake; it builds against Noctalia's own
   # pinned nixpkgs-unstable, independent of our inputs.
   noctalia-pkg = inputs.noctalia.packages.${pkgs.stdenv.hostPlatform.system}.default;
