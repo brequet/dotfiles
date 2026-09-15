@@ -40,27 +40,37 @@ binds {
     Mod+O repeat=false { toggle-overview; }
     Mod+Tab { toggle-overview; }
 
-    // Navigation: niri defaults with one tweak — J/K and the vertical arrows
-    // use the -or-workspace variants, so they walk stacked windows first and
-    // then continue onto the next/previous workspace (full Y-axis navigation;
-    // the plain defaults are no-ops while columns hold a single window).
+    // Navigation follows niri's defaults: arrows and hjkl are aliases of the
+    // same actions; J/K and the vertical arrows walk windows inside a column
+    // (stack them first — see the stacking binds below). Ctrl moves, Shift
+    // targets monitors (no-ops on the laptop screen, useful with an external
+    // display).
     Mod+Left  { focus-column-left; }
-    Mod+Down  { focus-window-or-workspace-down; }
-    Mod+Up    { focus-window-or-workspace-up; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
     Mod+Right { focus-column-right; }
     Mod+H     { focus-column-left; }
-    Mod+J     { focus-window-or-workspace-down; }
-    Mod+K     { focus-window-or-workspace-up; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
     Mod+L     { focus-column-right; }
 
     Mod+Ctrl+Left  { move-column-left; }
-    Mod+Ctrl+Down  { move-window-down-or-to-workspace-down; }
-    Mod+Ctrl+Up    { move-window-up-or-to-workspace-up; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
     Mod+Ctrl+Right { move-column-right; }
     Mod+Ctrl+H     { move-column-left; }
-    Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
-    Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
     Mod+Ctrl+L     { move-column-right; }
+
+    // Stacking (niri defaults, adapted to AZERTY): the QWERTY "." key prints
+    // ";" unshifted on AZERTY, and the QWERTY "[" spot is a dead key (^), so
+    // the right-side consume/expel lives on the neighboring $ key.
+    Mod+dollar { consume-or-expel-window-right; }
+    Mod+comma { consume-window-into-column; }
+    Mod+semicolon { expel-window-from-column; }
+    // Render a stacked column as vertical tabs instead of a vertical pile.
+    Mod+W { toggle-column-tabbed-display; }
 
     Mod+Shift+Left  { focus-monitor-left; }
     Mod+Shift+Down  { focus-monitor-down; }
@@ -129,7 +139,8 @@ binds {
     Mod+V { spawn "noctalia" "msg" "panel-toggle" "clipboard"; }
     Mod+P { spawn "noctalia" "msg" "panel-toggle" "noctalia/notes:panel"; }
     Mod+X { spawn "noctalia" "msg" "panel-toggle" "session"; }
-    Mod+Comma { spawn "noctalia" "msg" "settings-toggle"; }
+    // Noctalia settings moved here: Mod+Comma belongs to niri's consume bind.
+    Mod+S { spawn "noctalia" "msg" "settings-toggle"; }
     Mod+Alt+N allow-when-locked=true { spawn "noctalia" "msg" "nightlight-toggle"; }
     Mod+Alt+L allow-when-locked=true { spawn "noctalia" "msg" "session" "lock"; }
 
