@@ -67,6 +67,8 @@ in
   users.users.brequet.shell = pkgs.fish;
 
   programs.direnv.enable = true;
+  # Cache devshells so direnv doesn't re-evaluate the flake on every cd.
+  programs.direnv.nix-direnv.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
