@@ -8,6 +8,12 @@
 
 let
   unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+
+  # Hand-editable files stay in the repo working copy: `link` symlinks them
+  # out of the store (via mkOutOfStoreSymlink) instead of copying their
+  # content in, so editors write straight through to ~/dotfiles.
+  dotfiles = "${config.home.homeDirectory}/dotfiles";
+  link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
 in
 
 {
@@ -21,18 +27,14 @@ in
   # so it can be set declaratively here.
   home.sessionVariables.FICHE_VAULT_PATH = "${config.home.homeDirectory}/Documents/vault";
 
-  # Symlinked out of the store so Zed's settings editor writes through to the
-  # repo working copy; only Nix changes need a rebuild.
   xdg.configFile = {
-    "zed/settings.json".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/settings.json";
-    "zed/keymap.json".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/zed/keymap.json";
-    "starship.toml".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/starship/starship.toml";
-    # Same for the niri session config.
-    "niri/config.kdl".source =
-      config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/niri/config.kdl";
+    "zed/settings.json".source = link "home/zed/settings.json";
+    "zed/keymap.json".source = link "home/zed/keymap.json";
+    "starship.toml".source = link "home/starship/starship.toml";
+    "niri/config.kdl".source = link "home/niri/config.kdl";
+    # Global opencode config, versioned in the repo and editable in place.
+    "opencode/AGENTS.md".source = link "home/agents/AGENTS.md";
+    "opencode/opencode.jsonc".source = link "home/opencode/opencode.jsonc";
     # The generated hm-session-vars script skips itself when this marker is
     # inherited (e.g. imported into the systemd user environment by some app),
     # which would leave PATH and session variables unapplied in fish. conf.d is
@@ -42,16 +44,9 @@ in
     '';
   };
 
-  # Global opencode config, versioned in the repo and editable in place.
-  xdg.configFile."opencode/AGENTS.md".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/AGENTS.md";
-  xdg.configFile."opencode/opencode.jsonc".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/opencode/opencode.jsonc";
-
   # Same out-of-store trick so skills stay editable in place while being
   # versioned in this repo.
-  home.file.".agents/skills".source =
-    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/home/agents/skills";
+  home.file.".agents/skills".source = link "home/agents/skills";
 
   # OpenChamber rewrites preferences.json atomically (temp file + rename), so a
   # symlink would be replaced by a regular file on every save. Seed it on a
