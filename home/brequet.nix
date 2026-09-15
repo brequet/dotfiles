@@ -1,7 +1,7 @@
-{ config, lib, pkgs, inputs, zen-browser, nixpkgs-unstable, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 let
-  unstable = nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
 
   # OpenChamber — agentic dev environment on top of OpenCode. Only shipped
   # as an AppImage; wrapType2 extracts it so it runs without FUSE, then add
@@ -170,7 +170,7 @@ in
   };
 
   home.packages = with pkgs; [
-    zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
     chromium
     # Wayland helpers; Noctalia provides the bar, notifications, tray and
     # mixer, Vicinae is the launcher, Noctalia the brightness OSD.

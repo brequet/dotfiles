@@ -34,18 +34,14 @@
   outputs =
     inputs@{
       nixpkgs,
-      nixpkgs-unstable,
       home-manager,
       catppuccin,
-      zen-browser,
       ...
     }:
     {
       nixosConfigurations.ideapad = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs zen-browser nixpkgs-unstable;
-        };
+        specialArgs = { inherit inputs; };
         modules = [
           ./hosts/ideapad/configuration.nix
           home-manager.nixosModules.home-manager

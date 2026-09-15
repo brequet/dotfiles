@@ -2,7 +2,7 @@
 # Rebuild:   sudo nixos-rebuild switch --flake ~/dotfiles#ideapad
 # Rollback:  sudo nixos-rebuild switch --rollback
 {
-  config, inputs, lib, pkgs, zen-browser, nixpkgs-unstable, ...
+  config, inputs, lib, pkgs, ...
 }:
 
 let
@@ -234,7 +234,7 @@ in
     # Move pre-existing files to <file>.bak on first activation instead of
     # failing with a collision error.
     backupFileExtension = "bak";
-    extraSpecialArgs = { inherit inputs zen-browser nixpkgs-unstable; };
+    extraSpecialArgs = { inherit inputs; };
     sharedModules = [ inputs.catppuccin.homeModules.catppuccin ];
     users.brequet = import ../../home/brequet.nix;
   };
