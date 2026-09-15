@@ -182,6 +182,31 @@ in
         # Plugins, the gear on the notes row; per-file location is runtime
         # state, not declarative config).
         plugins.enabled = [ "noctalia/notes" ];
+        # Idle policy, timed from the last input event: screen off at 5 min,
+        # lock at 10, lock + suspend at 30. Defining behaviors here replaces
+        # Noctalia's seeded (disabled) ones, so all three are spelled out.
+        # Returning from screen-off wakes the monitors; idle inhibitors
+        # (video playback, caffeine) are honoured.
+        idle = {
+          behavior_order = [ "screen-off" "lock" "lock-and-suspend" ];
+          behavior = {
+            "screen-off" = {
+              enabled = true;
+              timeout = 300;
+              action = "screen_off";
+            };
+            lock = {
+              enabled = true;
+              timeout = 600;
+              action = "lock";
+            };
+            "lock-and-suspend" = {
+              enabled = true;
+              timeout = 1800;
+              action = "lock_and_suspend";
+            };
+          };
+        };
       };
     };
   };
