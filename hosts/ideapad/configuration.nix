@@ -267,8 +267,9 @@ in
     users.brequet = import ../../home/brequet.nix;
   };
 
-  # Obsidian is the only unfree package in use.
-  nixpkgs.config.allowUnfree = true;
+  # Obsidian is the only unfree package in use. Naming it here means anything
+  # else unfree fails the build instead of being silently allowed.
+  nixpkgs.config.allowUnfreePackages = [ "obsidian" ];
 
   system.stateVersion = "26.05";
 }
