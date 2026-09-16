@@ -25,7 +25,21 @@ in
 
   # fiche reads the vault location from the environment; it's not a secret,
   # so it can be set declaratively here.
-  home.sessionVariables.FICHE_VAULT_PATH = "${config.home.homeDirectory}/Documents/vault";
+  home.sessionVariables = {
+    FICHE_VAULT_PATH = "${config.home.homeDirectory}/Documents/vault";
+    # Terminal tools (git, systemctl edit, yazi's default openers) follow
+    # EDITOR; hx replaces the nano the session used to inherit.
+    EDITOR = "hx";
+    VISUAL = "hx";
+  };
+
+  # Shells source hm-session-vars.sh and get the values above, but niri
+  # keybinds, Noctalia and D-Bus-activated apps only inherit the systemd user
+  # environment, which reads environment.d at user-manager start (login).
+  systemd.user.sessionVariables = {
+    EDITOR = "hx";
+    VISUAL = "hx";
+  };
 
   xdg.configFile = {
     "zed/settings.json".source = link "home/zed/settings.json";
@@ -183,7 +197,11 @@ in
         # Returning from screen-off wakes the monitors; idle inhibitors
         # (video playback, caffeine) are honoured.
         idle = {
-          behavior_order = [ "screen-off" "lock" "lock-and-suspend" ];
+          behavior_order = [
+            "screen-off"
+            "lock"
+            "lock-and-suspend"
+          ];
           behavior = {
             "screen-off" = {
               enabled = true;
