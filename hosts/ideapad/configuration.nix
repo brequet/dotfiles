@@ -224,6 +224,29 @@ in
   systemd.services.systemd-suspend.serviceConfig.Environment = "SYSTEMD_SLEEP_FREEZE_USER_SESSIONS=0";
   boot.blacklistedKernelModules = [ "ucsi_acpi" ];
 
+  # The Synaptics i2c-hid touchpad sometimes comes back from s2idle with a
+  # broken multitouch report descriptor: pointer and taps keep working but
+  # two-finger scroll stays dead until the driver is reloaded. This unit only
+  # lives during sleep; its ExecStop runs when sleep.target is stopped after
+  # resume and rebinds the device so the descriptor is read again.
+  systemd.services.reload-touchpad = {
+    description = "Reload the i2c-hid touchpad driver after resume";
+    wantedBy = [ "sleep.target" ];
+    before = [ "sleep.target" ];
+    unitConfig = {
+      DefaultDependencies = false;
+      StopWhenUnneeded = true;
+    };
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStop = [
+        "${pkgs.kmod}/bin/modprobe -r i2c_hid_acpi"
+        "${pkgs.kmod}/bin/modprobe i2c_hid_acpi"
+      ];
+    };
+  };
+
   # TTY keyboard layout. The graphical layouts live in their own configs:
   # niri's in ~/dotfiles/home/niri, the greeter's in the greeter settings.
   console.keyMap = "fr";
