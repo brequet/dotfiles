@@ -158,9 +158,15 @@ stdenv.mkDerivation {
   '';
 
   postFixup = ''
+    # The AppImage expects an FHS system to provide the native EGL library;
+    # keep the bundled libs first (ANGLE's libEGL.so lives here) and fall
+    # back to libglvnd for libEGL.so.1, or ANGLE cannot initialize and
+    # Chromium silently drops to software rendering.
     makeWrapper $out/opt/openchamber/openchamber $out/bin/openchamber \
       "''${gappsWrapperArgs[@]}" \
-      --prefix LD_LIBRARY_PATH : "$out/opt/openchamber:$out/opt/openchamber/usr/lib" \
+      --prefix LD_LIBRARY_PATH : "$out/opt/openchamber:$out/opt/openchamber/usr/lib:${
+        lib.makeLibraryPath [ libglvnd ]
+      }" \
       --suffix XDG_DATA_DIRS : "$out/opt/openchamber/usr/share" \
       --prefix PATH : "${
         lib.makeBinPath [
