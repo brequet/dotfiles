@@ -11,12 +11,16 @@
     "bindings": {
       "ctrl-'": "terminal_panel::Toggle",
       "ctrl-%": "workspace::NewTerminal",
+      "alt-left": "pane::ActivatePreviousItem",
+      "alt-right": "pane::ActivateNextItem",
     },
   },
   {
     "context": "Editor",
     "bindings": {
       "ctrl-'": "terminal_panel::Toggle",
+      "ctrl-alt-left": "pane::GoBack",
+      "ctrl-alt-right": "pane::GoForward",
     },
   },
 ]
