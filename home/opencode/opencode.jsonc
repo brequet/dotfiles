@@ -1,3 +1,11 @@
 {
-  "$schema": "https://opencode.ai/config.json"
+  "$schema": "https://opencode.ai/config.json",
+  // Reference checkouts are cloned under the global data directory, outside
+  // every project. Allow reading them without an external_directory prompt;
+  // edits stay denied because a refresh resets those checkouts.
+  "permissions": [
+    { "action": "external_directory", "resource": "~/.local/share/opencode/repos/*", "effect": "allow" },
+    { "action": "read", "resource": "~/.local/share/opencode/repos/*", "effect": "allow" },
+    { "action": "edit", "resource": "~/.local/share/opencode/repos/*", "effect": "deny" }
+  ]
 }
