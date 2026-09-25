@@ -7,8 +7,6 @@
 }:
 
 let
-  unstable = inputs.nixpkgs-unstable.legacyPackages.${pkgs.stdenv.hostPlatform.system};
-
   # Hand-editable files stay in the repo working copy: `link` symlinks them
   # out of the store (via mkOutOfStoreSymlink) instead of copying their
   # content in, so editors write straight through to ~/dotfiles.
@@ -232,7 +230,7 @@ in
     xwayland-satellite
     obsidian
     ripgrep
-    unstable.opencode
+    opencode
     openchamber
     package-version-server
     # Nix language server, used by the Zed Nix extension.

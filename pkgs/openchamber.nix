@@ -5,7 +5,11 @@
 # OpenSSH's on a store-linked ~/.ssh/config). Instead, extract the AppImage
 # and let autoPatchelfHook patch its ELF files, so it runs as a plain Electron
 # app in the user session.
-# Bump with: nix run nixpkgs#nix-update -- --flake openchamber
+# 2.x bundles the OpenCode 2 CLI at opt/openchamber/resources/opencode-cli,
+# which autoPatchelfHook patches along with the rest of the tree, so the app
+# needs no opencode on PATH. Only the app icon moved: 2.0 ships openchamber.svg
+# instead of the old 256x256 openchamber.png.
+# Bump with: nix run nixpkgs#nix-update -- --flake openchamber (or ./update.sh)
 {
   alsa-lib,
   appimageTools,
@@ -59,15 +63,18 @@
 }:
 
 let
-  version = "1.23.0";
-  src = fetchurl {
+  version = "2.0.1";
+  # Stays the derivation's src so `nix-update` can read the version and hash
+  # straight off this fetchurl; the AppImage is extracted separately below.
+  fetched = fetchurl {
     url = "https://github.com/openchamber/openchamber/releases/download/v${version}/OpenChamber-${version}-linux-x86_64.AppImage";
-    hash = "sha256-FCIs3pemKIhgnt9gTWERIpqnE/tiOpq+ln/v0/iWR/w=";
+    hash = "sha256-tPa29joQMqTXej6kWcavz9ckaKllMAu3b6o9Duf7ppg=";
   };
 
   extracted = appimageTools.extractType2 {
     pname = "openchamber";
-    inherit version src;
+    inherit version;
+    src = fetched;
   };
 
   desktopItem = makeDesktopItem {
@@ -84,7 +91,10 @@ stdenv.mkDerivation {
   pname = "openchamber";
   inherit version;
 
-  src = extracted;
+  src = fetched;
+  # stdenv cannot unpack an AppImage (an ELF with a squashfs attached), so the
+  # extracted tree is copied in installPhase instead.
+  dontUnpack = true;
 
   dontConfigure = true;
   dontBuild = true;
@@ -146,11 +156,11 @@ stdenv.mkDerivation {
     runHook preInstall
 
     mkdir -p $out/opt/openchamber
-    cp -a . $out/opt/openchamber/
+    cp -a ${extracted}/. $out/opt/openchamber/
     chmod -R u+w $out/opt/openchamber
 
-    install -Dm644 ${extracted}/openchamber.png \
-      $out/share/icons/hicolor/256x256/apps/openchamber.png
+    install -Dm644 ${extracted}/openchamber.svg \
+      $out/share/icons/hicolor/scalable/apps/openchamber.svg
     install -Dm644 ${desktopItem}/share/applications/openchamber.desktop \
       $out/share/applications/openchamber.desktop
 
@@ -183,5 +193,6 @@ stdenv.mkDerivation {
     license = lib.licenses.mit;
     mainProgram = "openchamber";
     platforms = [ "x86_64-linux" ];
+    sourceProvenance = with lib.sourceTypes; [ binaryNativeCode ];
   };
 }

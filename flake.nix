@@ -42,13 +42,15 @@
       system = "x86_64-linux";
     in
     {
-      # The repacked OpenChamber package is exposed here so that
-      # `nix-update --flake openchamber` can find it; the host reuses the same
-      # derivation through the pkgs/ overlay. Note that `nix flake update`
-      # never bumps it: it's pinned by hand in pkgs/openchamber.nix.
-      packages.${system}.openchamber =
-        nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openchamber.nix
-          { };
+      # The repacked OpenChamber and OpenCode packages are exposed here so
+      # that `nix-update --flake <name>` and `nix build .#<name>` can find
+      # them; the host reuses the same derivations through the pkgs/ overlay.
+      # Note that `nix flake update` never bumps them: both are pinned by
+      # hand in pkgs/ and bumped by update.sh.
+      packages.${system} = {
+        openchamber = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/openchamber.nix { };
+        opencode = nixpkgs.legacyPackages.${system}.callPackage ./pkgs/opencode.nix { };
+      };
 
       # `nix fmt` formats the repo with nixfmt (RFC style).
       formatter.${system} = nixpkgs.legacyPackages.${system}.nixfmt;
