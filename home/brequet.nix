@@ -242,6 +242,8 @@ in
     obsidian
     qbittorrent
     ripgrep
+    # Official 7-Zip (`7zz`): zip/7z archives, read-only rar.
+    _7zz
     opencode
     openchamber
     package-version-server
