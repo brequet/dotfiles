@@ -119,6 +119,12 @@ in
     "x-scheme-handler/https" = "zen.desktop";
     "x-scheme-handler/about" = "zen.desktop";
     "x-scheme-handler/unknown" = "zen.desktop";
+    # Videos open in mpv; yazi's opener goes through xdg-open, so this also
+    # covers picking a file from the file manager.
+    "video/mp4" = "mpv.desktop";
+    "video/quicktime" = "mpv.desktop";
+    "video/webm" = "mpv.desktop";
+    "video/x-matroska" = "mpv.desktop";
   };
 
   # System-wide packages only: efibootmgr manages UEFI boot order (dual boot)

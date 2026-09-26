@@ -108,6 +108,17 @@ in
         font-size = 12;
       };
     };
+    # Video playback. Mesa's radeonsi VA-API driver is already installed by
+    # hardware.graphics, so hwdec gives GPU decode on the Radeon 780M; gpu-next
+    # is the modern Wayland-friendly renderer. Position is remembered per file.
+    mpv = {
+      enable = true;
+      config = {
+        hwdec = "auto-safe";
+        vo = "gpu-next";
+        save-position-on-quit = true;
+      };
+    };
     btop.enable = true;
     yazi.enable = true;
     bat.enable = true;
