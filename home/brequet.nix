@@ -229,6 +229,7 @@ in
     # mixer, Vicinae is the launcher, Noctalia the brightness OSD.
     xwayland-satellite
     obsidian
+    qbittorrent
     ripgrep
     opencode
     openchamber
