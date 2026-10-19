@@ -7,8 +7,8 @@
 # app in the user session.
 # 2.x bundles the OpenCode 2 CLI at opt/openchamber/resources/opencode-cli,
 # which autoPatchelfHook patches along with the rest of the tree, so the app
-# needs no opencode on PATH. Only the app icon moved: 2.0 ships openchamber.svg
-# instead of the old 256x256 openchamber.png.
+# needs no opencode on PATH. The root icon changes between releases: 2.4.0
+# ships openchamber.png (512x512), 2.0 shipped openchamber.svg.
 # Bump with: nix run nixpkgs#nix-update -- --flake openchamber (or ./update.sh)
 {
   alsa-lib,
@@ -63,12 +63,12 @@
 }:
 
 let
-  version = "2.1.0";
+  version = "2.4.0";
   # Stays the derivation's src so `nix-update` can read the version and hash
   # straight off this fetchurl; the AppImage is extracted separately below.
   fetched = fetchurl {
     url = "https://github.com/openchamber/openchamber/releases/download/v${version}/OpenChamber-${version}-linux-x86_64.AppImage";
-    hash = "sha256-q08g/HwXzLy+cgz8u7q9C1ksGdjn6+BmPXyz+RiggvI=";
+    hash = "sha256-KoDromQd34JYkR1c4sd6gSxc7T4e/uUpaRsxiUWrOU4=";
   };
 
   extracted = appimageTools.extractType2 {
@@ -159,8 +159,8 @@ stdenv.mkDerivation {
     cp -a ${extracted}/. $out/opt/openchamber/
     chmod -R u+w $out/opt/openchamber
 
-    install -Dm644 ${extracted}/openchamber.svg \
-      $out/share/icons/hicolor/scalable/apps/openchamber.svg
+    install -Dm644 ${extracted}/openchamber.png \
+      $out/share/icons/hicolor/512x512/apps/openchamber.png
     install -Dm644 ${desktopItem}/share/applications/openchamber.desktop \
       $out/share/applications/openchamber.desktop
 

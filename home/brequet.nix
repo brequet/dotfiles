@@ -12,6 +12,25 @@ let
   # content in, so editors write straight through to ~/dotfiles.
   dotfiles = "${config.home.homeDirectory}/dotfiles";
   link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
+
+  # Zen 1.23.3b's x86_64 tarball was re-uploaded upstream after the flake
+  # pinned its hash. Use the real hash of the released asset (matches the
+  # GitHub release digest) until the flake catches up:
+  # https://github.com/youwen5/zen-browser-flake/pull/23
+  # The version check makes this override expire on the next Zen release.
+  zenUnwrapped = inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.zen-browser-unwrapped;
+  zen-browser = pkgs.callPackage "${inputs.zen-browser}/zen-browser.nix" {
+    zen-browser-unwrapped =
+      if zenUnwrapped.version == "1.23.3b" then
+        zenUnwrapped.overrideAttrs (old: {
+          src = pkgs.fetchurl {
+            inherit (old.src) url;
+            hash = "sha256-uyBF0+IWVNQP6EElAJLurf0sH8gx7vtQkiJ3PIvcoUk=";
+          };
+        })
+      else
+        zenUnwrapped;
+  };
 in
 
 {
@@ -234,7 +253,7 @@ in
   };
 
   home.packages = with pkgs; [
-    inputs.zen-browser.packages.${pkgs.stdenv.hostPlatform.system}.default
+    zen-browser
     chromium
     # Wayland helpers; Noctalia provides the bar, notifications, tray and
     # mixer, Vicinae is the launcher, Noctalia the brightness OSD.

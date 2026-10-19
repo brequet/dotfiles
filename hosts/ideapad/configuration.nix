@@ -1,5 +1,6 @@
 # Host "ideapad" — Lenovo IdeaPad Pro 5 14AHP9, NixOS + Windows dual boot.
-# Rebuild:   sudo nixos-rebuild switch --flake ~/dotfiles#ideapad
+# Rebuild:   nixos-rebuild switch --sudo --flake ~/dotfiles#ideapad
+#            (not `sudo nixos-rebuild`: root cannot read a user-owned git flake)
 # Rollback:  sudo nixos-rebuild switch --rollback
 {
   config,
@@ -73,6 +74,13 @@ in
   programs.direnv.enable = true;
   # Cache devshells so direnv doesn't re-evaluate the flake on every cd.
   programs.direnv.nix-direnv.enable = true;
+
+  # Let root read this repo's flake (e.g. a root-run rebuild or automatic
+  # upgrades); libgit2 refuses git repos owned by another user otherwise.
+  programs.git = {
+    enable = true;
+    config.safe.directory = [ "/home/brequet/dotfiles" ];
+  };
 
   nix.settings.experimental-features = [
     "nix-command"
