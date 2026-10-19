@@ -104,15 +104,17 @@ in
 
   programs = {
     fish.enable = true;
-    # fiche needs OPENCODE_API_KEY; ask for it once (home/fiche/ensure-api-key.sh)
-    # and load it from outside the Nix store on every shell.
+    # opencode, fiche and OpenChamber all read OPENCODE_API_KEY. The key lives
+    # outside the Nix store in ~/.secrets (mode 600). fish exports it at login;
+    # niri-session then imports the login environment into the systemd user
+    # manager, so GUI apps inherit it too.
     fish.shellInit = ''
-      if test -s ~/.config/fiche/api_key
-        set -gx OPENCODE_API_KEY (cat ~/.config/fiche/api_key)
+      if test -s ~/.secrets/opencode-api-key
+        set -gx OPENCODE_API_KEY (cat ~/.secrets/opencode-api-key)
       else if status is-interactive
-        bash ${./fiche/ensure-api-key.sh}
-        if test -s ~/.config/fiche/api_key
-          set -gx OPENCODE_API_KEY (cat ~/.config/fiche/api_key)
+        bash ${./secrets/ensure-opencode-key.sh}
+        if test -s ~/.secrets/opencode-api-key
+          set -gx OPENCODE_API_KEY (cat ~/.secrets/opencode-api-key)
         end
       end
     '';
