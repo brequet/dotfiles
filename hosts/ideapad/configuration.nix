@@ -148,6 +148,11 @@ in
   networking.networkmanager.enable = true;
   # Realtek 8852CE is unstable with Wi-Fi powersave enabled.
   networking.networkmanager.wifi.powersave = false;
+  # cfg80211 starts in the "world" (00) regulatory domain, where the 5 GHz DFS
+  # channels (52-64, 100-140) are passive-scan only: the AP is visible but
+  # authentication on it fails, so Wi-Fi silently stays on 2.4 GHz. Declaring
+  # the country lets the card actually use those channels.
+  boot.kernelParams = [ "cfg80211.ieee80211_regdom=FR" ];
 
   time.timeZone = "Europe/Paris";
 
