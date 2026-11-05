@@ -180,10 +180,10 @@ in
     enable = true;
     package = inputs.noctalia-greeter.packages.${pkgs.stdenv.hostPlatform.system}.default;
     passwordless-sync-users = [ "brequet" ];
-    cursorTheme.package = pkgs.catppuccin-cursors.mochaMauve;
     settings = {
       session.default = "niri";
       keyboard.layout = "fr";
+      cursor.path = pkgs.catppuccin-cursors.mochaMauve;
       cursor.theme = "catppuccin-mocha-mauve-cursors";
       cursor.size = 24;
     };
