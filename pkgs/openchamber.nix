@@ -63,12 +63,12 @@
 }:
 
 let
-  version = "2.6.1";
+  version = "2.7.2";
   # Stays the derivation's src so `nix-update` can read the version and hash
   # straight off this fetchurl; the AppImage is extracted separately below.
   fetched = fetchurl {
     url = "https://github.com/openchamber/openchamber/releases/download/v${version}/OpenChamber-${version}-linux-x86_64.AppImage";
-    hash = "sha256-C3cY4LaUZ/bF+Di09i97uu66q8UrYmPsBltY4PN4YIs=";
+    hash = "sha256-agbPfTqMUo2+k9DM0+yU+qVLcDFYxzMpxuE8u+JS7zw=";
   };
 
   extracted = appimageTools.extractType2 {
